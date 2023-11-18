@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "830509719512",
+    "project_id": "apartemenku-a2861",
+    "storage_bucket": "apartemenku-a2861.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:830509719512:android:b0010e3027eafc91ee1cad",
+        "android_client_info": {
+          "package_name": "com.geded.apartemenku"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQ5fmtUydYypE7BOIu_aoXiBQlzzXUmP0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:830509719512:android:eb67ad6be5137587ee1cad",
+        "android_client_info": {
+          "package_name": "com.geded.apartemenkusecurity"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQ5fmtUydYypE7BOIu_aoXiBQlzzXUmP0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:830509719512:android:fcb964b51b391477ee1cad",
+        "android_client_info": {
+          "package_name": "com.geded.apartemenkutenant"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQ5fmtUydYypE7BOIu_aoXiBQlzzXUmP0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
