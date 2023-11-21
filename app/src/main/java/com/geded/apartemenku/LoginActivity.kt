@@ -69,6 +69,8 @@ class LoginActivity : AppCompatActivity() {
                             val intent = Intent(this, MainActivity::class.java)
                             startActivity(intent)
                             this.finish()
+                        }else if (resultDb == "notactive") {
+                            Toast.makeText(this, "Unit Ini Sedang Berstatus Nonaktif!", Toast.LENGTH_SHORT).show()
                         } else {
                             Toast.makeText(this, "Username atau Password Salah!", Toast.LENGTH_SHORT).show()
                         }
