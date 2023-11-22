@@ -15,11 +15,29 @@
         android:theme="@style/ApartemenKuAppTheme"
         tools:targetApi="31">
         <activity
+            android:name=".ItemDetailActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".TenantItemsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ServiceTenantActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ProductTenantActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".PackageDetailActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".PackageListActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".LoginActivity"
             android:exported="true"

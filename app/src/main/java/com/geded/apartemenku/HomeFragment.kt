@@ -41,5 +41,17 @@ class HomeFragment : Fragment() {
                 startActivity(intent)
             }
         }
+        binding.btnBuyStuffHome.setOnClickListener {
+            activity?.let {
+                val intent = Intent(it, ProductTenantActivity::class.java)
+                startActivity(intent)
+            }
+        }
+        binding.btnBuyServiceHome.setOnClickListener {
+            activity?.let {
+                val intent = Intent(it, ServiceTenantActivity::class.java)
+                startActivity(intent)
+            }
+        }
     }
 }

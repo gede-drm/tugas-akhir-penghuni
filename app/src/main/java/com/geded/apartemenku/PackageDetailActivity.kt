@@ -38,7 +38,6 @@ class PackageDetailActivity : AppCompatActivity() {
 
         binding.progressBarPkgDetail.isVisible = true
         binding.imgViewDetailPkg.isVisible = false
-        binding.textView4.isVisible = false
         binding.textView8.isVisible = false
         binding.textView9.isVisible = false
         binding.textView10.isVisible = false
@@ -75,7 +74,6 @@ class PackageDetailActivity : AppCompatActivity() {
                 val obj = JSONObject(it)
                 if(obj.getString("status")=="success") {
                     binding.progressBarPkgDetail.isVisible = false
-                    binding.textView4.isVisible = true
                     binding.textView8.isVisible = true
                     binding.textView9.isVisible = true
                     binding.textView10.isVisible = true
