@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".ItemDetailActivity">
 
+    <ProgressBar
+        android:id="@+id/progressBarItemDetail"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/cardView3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView3"
         android:layout_width="match_parent"
@@ -35,6 +45,7 @@
     </androidx.cardview.widget.CardView>
 
     <ScrollView
+        android:id="@+id/scrollViewItemDetail"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/cardView3"
@@ -94,7 +105,8 @@
                 android:id="@+id/imgViewItemDetail"
                 android:layout_width="0dp"
                 android:layout_height="300dp"
-                android:scaleType="centerCrop"
+                android:background="#FFFFFF"
+                android:scaleType="fitCenter"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

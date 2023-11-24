@@ -37,6 +37,8 @@ class ItemDetailActivity : AppCompatActivity() {
         var shared: SharedPreferences = getSharedPreferences(Global.sharedFile, Context.MODE_PRIVATE)
         token = shared.getString(LoginActivity.TOKEN, "").toString()
 
+        binding.scrollViewItemDetail.isVisible = false
+
         if(item_type == "product"){
             binding.btnCartItemDetail.text = "Tambahkan ke Keranjang"
             getProductDetail()
@@ -57,31 +59,61 @@ class ItemDetailActivity : AppCompatActivity() {
                 val obj = JSONObject(it)
                 if(obj.getString("status")=="success") {
                     val itemObj = obj.getJSONObject("data")
-                    val statusReview = itemObj.getString("reviewsStatus")
-
-                    val photo_url = itemObj.getString("photo_url")
-                    val price = Helper.formatter(itemObj.getDouble("price"))
-
-                    Picasso.get().load(photo_url).into(binding.imgViewItemDetail)
-                    binding.txtNameItemDetail.text = itemObj.getString("name")
-                    binding.txtPriceItemDetail.text = "Rp$price"
-                    binding.txtSoldItemDetail.text = "Terjual " + itemObj.getInt("sold").toString()
-                    binding.txtRatingDetailItem.text = itemObj.getDouble("rating").toString()
-                    binding.txtDescItemDetail.text = itemObj.getString("description")
-
-                    if(statusReview != "empty"){
-                        val arrReview = itemObj.getJSONArray("reviews")
-                        for (i in 0 until arrReview.length()) {
-                            val reviewObj = arrReview.getJSONObject(i)
-                            val review = Review(reviewObj.getString("unit_no"), reviewObj.getInt("rating"), reviewObj.getString("review"))
-                            reviews.add(review)
+                    val stock = itemObj.getInt("stock")
+                    if(stock == 0){
+                        val builder = MaterialAlertDialogBuilder(this)
+                        builder.setCancelable(false)
+                        builder.setTitle("Stok Habis")
+                        builder.setMessage("Mohon Maaf, Stok Barang Ini Baru Saja Habis!")
+                        builder.setPositiveButton("OK"){dialog, which->
+                            finish()
                         }
-                        updateListReview()
+                        builder.create().show()
                     }
-                    else{
-                        binding.recViewItemReviews.isVisible = false
-                        binding.txtEmptyItemReview.isVisible = true
+                    else {
+                        val statusReview = itemObj.getString("reviewsStatus")
+
+                        val photo_url = itemObj.getString("photo_url")
+                        val price = Helper.formatter(itemObj.getDouble("price"))
+
+                        Picasso.get().load(photo_url).into(binding.imgViewItemDetail)
+                        binding.txtNameItemDetail.text = itemObj.getString("name")
+                        binding.txtPriceItemDetail.text = "Rp$price"
+                        binding.txtSoldItemDetail.text =
+                            "Terjual " + itemObj.getInt("sold").toString()
+                        binding.txtRatingDetailItem.text = itemObj.getDouble("rating").toString()
+                        binding.txtDescItemDetail.text = itemObj.getString("description")
+
+                        if (statusReview != "empty") {
+                            val arrReview = itemObj.getJSONArray("reviews")
+                            for (i in 0 until arrReview.length()) {
+                                val reviewObj = arrReview.getJSONObject(i)
+                                val review = Review(
+                                    reviewObj.getString("unit_no"),
+                                    reviewObj.getInt("rating"),
+                                    reviewObj.getString("review")
+                                )
+                                reviews.add(review)
+                            }
+                            updateListReview()
+                        } else {
+                            binding.recViewItemReviews.isVisible = false
+                            binding.txtEmptyItemReview.isVisible = true
+                        }
+
+                        binding.progressBarItemDetail.isVisible = false
+                        binding.scrollViewItemDetail.isVisible = true
                     }
+                }
+                else if(obj.getString("status")=="productnull"){
+                    val builder = MaterialAlertDialogBuilder(this)
+                    builder.setCancelable(false)
+                    builder.setTitle("Barang Tidak Tersedia")
+                    builder.setMessage("Mohon Maaf, Barang ini Baru Saja ditiadakan oleh Tenant!")
+                    builder.setPositiveButton("OK"){dialog, which->
+                        finish()
+                    }
+                    builder.create().show()
                 }
                 else{
                     val builder = MaterialAlertDialogBuilder(this)
@@ -125,31 +157,67 @@ class ItemDetailActivity : AppCompatActivity() {
                 val obj = JSONObject(it)
                 if(obj.getString("status")=="success") {
                     val itemObj = obj.getJSONObject("data")
-                    val statusReview = itemObj.getString("reviewsStatus")
-
-                    val photo_url = itemObj.getString("photo_url")
-                    val price = Helper.formatter(itemObj.getDouble("price"))
-
-                    Picasso.get().load(photo_url).into(binding.imgViewItemDetail)
-                    binding.txtNameItemDetail.text = itemObj.getString("name")
-                    binding.txtPriceItemDetail.text = "Rp$price"
-                    binding.txtSoldItemDetail.text = "Terjual " + itemObj.getInt("sold").toString()
-                    binding.txtRatingDetailItem.text = itemObj.getDouble("rating").toString()
-                    binding.txtDescItemDetail.text = itemObj.getString("description")
-
-                    if(statusReview != "empty"){
-                        val arrReview = itemObj.getJSONArray("reviews")
-                        for (i in 0 until arrReview.length()) {
-                            val reviewObj = arrReview.getJSONObject(i)
-                            val review = Review(reviewObj.getString("unit_no"), reviewObj.getInt("rating"), reviewObj.getString("review"))
-                            reviews.add(review)
+                    val availability = itemObj.getInt("availability")
+                    if(availability == 0){
+                        val builder = MaterialAlertDialogBuilder(this)
+                        builder.setCancelable(false)
+                        builder.setTitle("Jas Tidak Tersedia")
+                        builder.setMessage("Mohon Maaf, Jasa Ini Tidak Tersedia untuk Sementara Waktu!")
+                        builder.setPositiveButton("OK"){dialog, which->
+                            finish()
                         }
-                        updateListReview()
+                        builder.create().show()
                     }
-                    else{
-                        binding.recViewItemReviews.isVisible = false
-                        binding.txtEmptyItemReview.isVisible = true
+                    else {
+                        val statusReview = itemObj.getString("reviewsStatus")
+
+                        val photo_url = itemObj.getString("photo_url")
+                        val price = Helper.formatter(itemObj.getDouble("price"))
+                        var pricePer = itemObj.getString("pricePer")
+                        if (pricePer == "hour") {
+                            pricePer = "Jam"
+                        } else {
+                            pricePer = "Paket"
+                        }
+
+                        Picasso.get().load(photo_url).into(binding.imgViewItemDetail)
+                        binding.txtNameItemDetail.text = itemObj.getString("name")
+                        binding.txtPriceItemDetail.text = "Rp$price/$pricePer"
+                        binding.txtSoldItemDetail.text =
+                            "Terjual " + itemObj.getInt("sold").toString()
+                        binding.txtRatingDetailItem.text = itemObj.getDouble("rating").toString()
+                        binding.txtDescItemDetail.text = itemObj.getString("description")
+
+                        if (statusReview != "empty") {
+                            val arrReview = itemObj.getJSONArray("reviews")
+                            for (i in 0 until arrReview.length()) {
+                                val reviewObj = arrReview.getJSONObject(i)
+                                val review = Review(
+                                    reviewObj.getString("unit_no"),
+                                    reviewObj.getInt("rating"),
+                                    reviewObj.getString("review")
+                                )
+                                reviews.add(review)
+                            }
+                            updateListReview()
+                        } else {
+                            binding.recViewItemReviews.isVisible = false
+                            binding.txtEmptyItemReview.isVisible = true
+                        }
+
+                        binding.progressBarItemDetail.isVisible = false
+                        binding.scrollViewItemDetail.isVisible = true
                     }
+                }
+                else if(obj.getString("status")=="productnull"){
+                    val builder = MaterialAlertDialogBuilder(this)
+                    builder.setCancelable(false)
+                    builder.setTitle("Jasa Tidak Tersedia")
+                    builder.setMessage("Mohon Maaf, Jasa ini Baru Saja ditiadakan oleh Tenant!")
+                    builder.setPositiveButton("OK"){dialog, which->
+                        finish()
+                    }
+                    builder.create().show()
                 }
                 else{
                     val builder = MaterialAlertDialogBuilder(this)
