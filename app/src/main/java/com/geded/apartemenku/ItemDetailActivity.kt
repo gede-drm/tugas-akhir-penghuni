@@ -209,7 +209,7 @@ class ItemDetailActivity : AppCompatActivity() {
                         binding.scrollViewItemDetail.isVisible = true
                     }
                 }
-                else if(obj.getString("status")=="productnull"){
+                else if(obj.getString("status")=="servicenull"){
                     val builder = MaterialAlertDialogBuilder(this)
                     builder.setCancelable(false)
                     builder.setTitle("Jasa Tidak Tersedia")
