@@ -13,6 +13,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="8dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:clickable="true"
         app:cardCornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -101,6 +103,7 @@
                 android:layout_marginBottom="12dp"
                 android:fontFamily="@font/public_sans_semibold"
                 android:text="Buka"
+                android:textColor="@color/md_theme_light_secondary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>

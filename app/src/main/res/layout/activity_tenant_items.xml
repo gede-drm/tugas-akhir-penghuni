@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ServiceTenantActivity">
+    tools:context=".TenantItemsActivity">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/refreshLayoutSvcTen"
+        android:id="@+id/refreshLayoutTenantItems"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -19,62 +19,88 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <Button
+                android:id="@+id/btnItemCart"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginEnd="24dp"
+                android:text="Keranjang"
+                app:icon="@drawable/baseline_shopping_basket_24"
+                app:iconGravity="start"
+                app:layout_constraintBottom_toTopOf="@+id/txtILSearchTenItem"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ProgressBar
+                android:id="@+id/progressBarTItems"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/recViewTenItems"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtTenAddressTItems" />
+
             <TextView
-                android:id="@+id/txtEmptySTenList"
+                android:id="@+id/txtEmptyItemTenList"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginEnd="24dp"
                 android:fontFamily="@font/public_sans_semibold"
-                android:text="Mohon Maaf, Saat Ini Belum Ada Tenant Jasa yang Terdaftar.\nNantikan Tenant-tenant yang akan Bergabung!"
+                android:text="Mohon Maaf, Tenant Ini Belum Memiliki Item untuk dijual.\nNantikan Beberapa Saat Lagi!"
                 android:textAlignment="center"
                 android:textSize="18sp"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView11" />
+                app:layout_constraintTop_toBottomOf="@+id/txtTenAddressTItems" />
 
             <TextView
-                android:id="@+id/textView11"
-                android:layout_width="wrap_content"
+                android:id="@+id/txtTenNameTItems"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginEnd="8dp"
                 android:fontFamily="@font/public_sans_semibold"
-                android:text="Tenant Jasa"
+                android:text="Nama Toko"
                 android:textColor="@color/md_theme_light_primary"
                 android:textSize="20sp"
+                app:layout_constraintEnd_toStartOf="@+id/btnItemCart"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ProgressBar
-                android:id="@+id/progressBarSTen"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/txtTenAddressTItems"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="8dp"
+                android:text="TextView"
+                app:layout_constraintEnd_toStartOf="@+id/btnItemCart"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txtILSearchSTen" />
+                app:layout_constraintTop_toBottomOf="@+id/txtTenNameTItems" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/txtILSearchSTen"
+                android:id="@+id/txtILSearchTenItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="24dp"
-                android:hint="Cari Tenant"
+                android:hint="Cari Item"
                 app:hintAnimationEnabled="true"
                 app:hintEnabled="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView11"
+                app:layout_constraintTop_toBottomOf="@+id/txtTenAddressTItems"
                 app:startIconDrawable="@drawable/baseline_search_24">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/txtSearchSTen"
+                    android:id="@+id/txtSearchTenItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionDone"
@@ -83,15 +109,17 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recViewSTen"
+                android:id="@+id/recViewTenItems"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txtILSearchSTen"
-                tools:listitem="@layout/layout_tenant_list" />
+                app:layout_constraintTop_toBottomOf="@+id/txtILSearchTenItem"
+                tools:listitem="@layout/layout_item_tenant" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

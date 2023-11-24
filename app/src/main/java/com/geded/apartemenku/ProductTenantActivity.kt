@@ -30,8 +30,6 @@ class ProductTenantActivity : AppCompatActivity() {
         var shared: SharedPreferences = getSharedPreferences(Global.sharedFile, Context.MODE_PRIVATE)
         token = shared.getString(LoginActivity.TOKEN, "").toString()
 
-        getTenantData("")
-
         binding.txtSearchPTen.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
             if(actionId == EditorInfo.IME_ACTION_DONE){
                 val search = binding.txtSearchPTen.text.toString()
@@ -43,6 +41,17 @@ class ProductTenantActivity : AppCompatActivity() {
                 false
             }
         })
+
+        binding.refreshLayouProTen.setOnRefreshListener {
+            val search = binding.txtSearchPTen.text.toString()
+            getTenantData(search)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val search = binding.txtSearchPTen.text.toString()
+        getTenantData(search)
     }
 
     fun getTenantData(search:String){
@@ -66,7 +75,7 @@ class ProductTenantActivity : AppCompatActivity() {
                 else if(obj.getString("status")=="empty"){
                     binding.txtEmptyPTenList.visibility = View.VISIBLE
                     binding.txtILSearchPTen.visibility = View.INVISIBLE
-//                    binding.refreshLayoutPkgList.isRefreshing = false
+                    binding.refreshLayouProTen.isRefreshing = false
                     binding.recViewPTen.visibility = View.INVISIBLE
                     binding.progressBarPTen.visibility = View.INVISIBLE
                 }
@@ -101,6 +110,6 @@ class ProductTenantActivity : AppCompatActivity() {
         recyclerView.isVisible = true
         binding.txtEmptyPTenList.visibility = View.GONE
         binding.progressBarPTen.visibility = View.GONE
-//        binding.refreshLayoutPkgList.isRefreshing = false
+        binding.refreshLayouProTen.isRefreshing = false
     }
 }
