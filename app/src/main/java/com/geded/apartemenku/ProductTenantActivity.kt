@@ -1,6 +1,7 @@
 package com.geded.apartemenku
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -45,6 +46,11 @@ class ProductTenantActivity : AppCompatActivity() {
         binding.refreshLayouProTen.setOnRefreshListener {
             val search = binding.txtSearchPTen.text.toString()
             getTenantData(search)
+        }
+
+        binding.btnTenCart.setOnClickListener {
+            val intent = Intent(this, ShoppingCartActivity::class.java)
+            startActivity(intent)
         }
     }
 

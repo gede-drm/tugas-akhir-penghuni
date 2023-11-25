@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,7 +14,10 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.geded.apartemenku.databinding.ActivityItemDetailBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.squareup.picasso.Picasso
+import org.json.JSONArray
 import org.json.JSONObject
 
 class ItemDetailActivity : AppCompatActivity() {
@@ -40,11 +44,34 @@ class ItemDetailActivity : AppCompatActivity() {
         binding.scrollViewItemDetail.isVisible = false
 
         if(item_type == "product"){
-            binding.btnCartItemDetail.text = "Tambahkan ke Keranjang"
+            binding.btnAddToCartItemDetail.text = "Tambahkan ke Keranjang"
+            binding.btnSubtItemDetail.setOnClickListener {
+                var count = binding.txtNumCartDetail.text.toString().toInt()
+                if(count > 1){
+                    count--
+                    binding.txtNumCartDetail.setText(count.toString())
+                }
+                else{
+                    Toast.makeText(this, "Jumlah Barang Tidak Dapat Kurang dari 0", Toast.LENGTH_SHORT).show()
+                }
+            }
+            binding.btnPlusItemDetail.setOnClickListener {
+                var count = binding.txtNumCartDetail.text.toString().toInt()
+                if(count >= 1){
+                    count++
+                    binding.txtNumCartDetail.setText(count.toString())
+                }
+            }
+            binding.btnAddToCartItemDetail.setOnClickListener {
+                addToCart()
+            }
             getProductDetail()
         }
-        else{
-            binding.btnCartItemDetail.text = "Beli Sekarang"
+        else {
+            binding.btnSubtItemDetail.isVisible = false
+            binding.btnPlusItemDetail.isVisible = false
+            binding.txtNumCartDetail.isVisible = false
+            binding.btnAddToCartItemDetail.text = "Beli Sekarang"
             getServiceDetail()
         }
     }
@@ -259,5 +286,48 @@ class ItemDetailActivity : AppCompatActivity() {
         recyclerView.adapter = ItemReviewAdapter(reviews, this)
         recyclerView.isVisible = true
         binding.txtEmptyItemReview.isVisible = false
+    }
+
+    fun addToCart(){
+        val qty = binding.txtNumCartDetail.text.toString().toInt()
+        if(qty > 0){
+            var shared: SharedPreferences = getSharedPreferences(Global.sharedFile, Context.MODE_PRIVATE)
+            var cart = shared.getString(ShoppingCartActivity.CART, "").toString()
+            if(cart == ""){
+                var cartItems = arrayListOf<TempCart>()
+                val tempCart = TempCart(item_id, qty)
+                cartItems.add(tempCart)
+
+                var editor: SharedPreferences.Editor = shared.edit()
+                editor.putString(ShoppingCartActivity.CART, Gson().toJson(cartItems))
+                editor.apply()
+
+                Toast.makeText(this, Gson().toJson(cartItems).toString(), Toast.LENGTH_LONG).show()
+            }
+            else{
+                val sType = object : TypeToken<List<TempCart>>() { }.type
+                var itemCarts = Gson().fromJson(cart.toString(), sType) as ArrayList<TempCart>
+                var found = false
+                itemCarts.forEach{
+                    if(it.item_id == item_id) {
+                        it.qty = it.qty + qty
+                        found = true
+                    }
+                }
+                if(found == false){
+                    val tempCart = TempCart(item_id, qty)
+                    itemCarts.add(tempCart)
+                }
+
+                var editor: SharedPreferences.Editor = shared.edit()
+                editor.putString(ShoppingCartActivity.CART, Gson().toJson(itemCarts))
+                editor.apply()
+
+                Toast.makeText(this, "Cart isn't Empty!\n"+ Gson().toJson(itemCarts).toString(), Toast.LENGTH_SHORT).show()
+            }
+        }
+        else{
+            Toast.makeText(this, "Jumlah Barang Tidak Dapat Kurang dari 0", Toast.LENGTH_SHORT).show()
+        }
     }
 }

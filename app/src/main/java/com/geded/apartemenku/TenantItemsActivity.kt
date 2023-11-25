@@ -1,6 +1,7 @@
 package com.geded.apartemenku
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -52,6 +53,12 @@ class TenantItemsActivity : AppCompatActivity() {
 
         if(tenant_type == "service"){
             binding.btnItemCart.isVisible = false
+        }
+        else{
+            binding.btnItemCart.setOnClickListener {
+                val intent = Intent(this, ShoppingCartActivity::class.java)
+                startActivity(intent)
+            }
         }
 
         binding.txtSearchTenItem.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
