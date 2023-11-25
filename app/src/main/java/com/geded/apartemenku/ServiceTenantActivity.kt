@@ -67,7 +67,7 @@ class ServiceTenantActivity : AppCompatActivity() {
                     val data = obj.getJSONArray("data")
                     for (i in 0 until data.length()) {
                         var tenObj = data.getJSONObject(i)
-                        val ten = TenantList(tenObj.getInt("id"), tenObj.getString("name"), tenObj.getString("address"), tenObj.getDouble("rating"), tenObj.getString("type"), tenObj.getString("service_hour_start"), tenObj.getString("service_hour_end"), tenObj.getInt("delivery"), tenObj.getString("status"))
+                        val ten = TenantList(tenObj.getInt("id"), tenObj.getString("name"), tenObj.getString("address"), tenObj.getDouble("rating"), tenObj.getString("type"), tenObj.getString("service_hour_start"), tenObj.getString("service_hour_end"), tenObj.getInt("delivery"),  tenObj.getInt("cash"), tenObj.getString("status"))
                         tenants.add(ten)
                     }
                     updateList()

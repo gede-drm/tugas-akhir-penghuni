@@ -42,7 +42,15 @@ class TenantListAdapter(val tenants:ArrayList<TenantList>, val context: Fragment
                 txtTenDeliveryTList.text = "Menyediakan Pesan Antar"
             }
             else{
+                txtTenDeliveryTList.setTextColor(ContextCompat.getColor(txtTenDeliveryTList.context, R.color.md_theme_dark_onError))
                 txtTenDeliveryTList.text = "Tidak Menyediakan Pesan Antar"
+            }
+            if(tenants[position].cash == 1){
+                txtTenCashTList.text = "Menyediakan Pembayaran Tunai"
+            }
+            else{
+                txtTenCashTList.setTextColor(ContextCompat.getColor(txtTenCashTList.context, R.color.md_theme_dark_onError))
+                txtTenCashTList.text = "Tidak Menyediakan Pembayaran Tunai"
             }
         }
         holder.binding.cardViewTenList.setOnClickListener {
