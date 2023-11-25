@@ -47,6 +47,7 @@ dependencies {
     implementation("com.android.volley:volley-cronet:1.2.1")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation(platform("com.google.firebase:firebase-bom:32.4.1"))
+    implementation("com.google.code.gson:gson:2.10.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
