@@ -302,7 +302,7 @@ class ItemDetailActivity : AppCompatActivity() {
                 editor.putString(ShoppingCartActivity.CART, Gson().toJson(cartItems))
                 editor.apply()
 
-                Toast.makeText(this, Gson().toJson(cartItems).toString(), Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Item Berhasil  dimasukkan ke Keranjang", Toast.LENGTH_SHORT).show()
             }
             else{
                 val sType = object : TypeToken<List<TempCart>>() { }.type
@@ -323,7 +323,7 @@ class ItemDetailActivity : AppCompatActivity() {
                 editor.putString(ShoppingCartActivity.CART, Gson().toJson(itemCarts))
                 editor.apply()
 
-                Toast.makeText(this, "Cart isn't Empty!\n"+ Gson().toJson(itemCarts).toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Item Berhasil  dimasukkan ke Keranjang", Toast.LENGTH_SHORT).show()
             }
         }
         else{
