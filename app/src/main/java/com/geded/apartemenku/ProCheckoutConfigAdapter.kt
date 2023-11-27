@@ -146,7 +146,12 @@ class ProCheckoutConfigAdapter (val checkoutConfigs:ArrayList<ProCheckoutConfig>
                 position: Int,
                 id: Long
             ) {
-                checkoutConfigs[position].delivery_method = holder.binding.spinnerDeliveryCC.selectedItem.toString()
+                if (holder.binding.spinnerDeliveryCC.selectedItem.toString() == "Ambil"){
+                    checkoutConfigs[position].delivery_method = "pickup"
+                }
+                else{
+                    checkoutConfigs[position].delivery_method = "delivery"
+                }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -161,7 +166,12 @@ class ProCheckoutConfigAdapter (val checkoutConfigs:ArrayList<ProCheckoutConfig>
                 position: Int,
                 id: Long
             ) {
-                checkoutConfigs[position].payment_method = holder.binding.spinnerPaymentCC.selectedItem.toString()
+                if (holder.binding.spinnerPaymentCC.selectedItem.toString() == "Tunai"){
+                    checkoutConfigs[position].payment_method = "cash"
+                }
+                else{
+                    checkoutConfigs[position].payment_method = "transfer"
+                }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {

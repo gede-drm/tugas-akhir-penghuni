@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
@@ -26,6 +27,7 @@ class ShoppingCartActivity : AppCompatActivity() {
     private lateinit var binding: ActivityShoppingCartBinding
     var cartList:ArrayList<Cart> = arrayListOf()
     var checkoutConfigs:ArrayList<ProCheckoutConfig> = arrayListOf()
+    var unit_id = 0
     var token = ""
     companion object{
         val CART = "CART"
@@ -36,6 +38,7 @@ class ShoppingCartActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         var shared: SharedPreferences = getSharedPreferences(Global.sharedFile, Context.MODE_PRIVATE)
+        unit_id = shared.getInt(LoginActivity.RESIDENTID, 0)
         token = shared.getString(LoginActivity.TOKEN, "").toString()
 
         binding.cardViewPayment.isVisible = false
@@ -121,6 +124,7 @@ class ShoppingCartActivity : AppCompatActivity() {
                                     cartObj.getString("name"),
                                     cartObj.getDouble("price"),
                                     cartObj.getDouble("subtotal"),
+                                    cartObj.getInt("tenant_id"),
                                     cartObj.getString("tenant_name"),
                                     cartObj.getString("photo_url"),
                                     cartObj.getInt("cash")
@@ -239,7 +243,83 @@ class ShoppingCartActivity : AppCompatActivity() {
         getCart()
     }
 
-    fun checkout(){
+    fun checkout() {
+        var configNull: ArrayList<String> = arrayListOf()
+        checkoutConfigs.forEach { cc ->
+            if (cc.date == null || cc.time == null || cc.payment_method == null || cc.delivery_method == null) {
+                configNull.add(cc.tenant_name)
+            }
+        }
+        if (configNull.size > 0) {
+            val message = "Konfigurasi Checkout untuk Tenant " + configNull.joinToString(separator = ", ") + " Belum diisi"
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        } else {
+            val q = Volley.newRequestQueue(this)
+            val url = Global.urlWS + "tenant/productcheckout"
 
+            var stringRequest = object : StringRequest(
+                Method.POST, url, Response.Listener {
+                    Log.d("VOLLEY", it)
+                    val obj = JSONObject(it)
+                    if (obj.getString("status") == "success") {
+                        Toast.makeText(this, "Transaksi Berhasil!", Toast.LENGTH_SHORT).show()
+                        var shared: SharedPreferences = getSharedPreferences(Global.sharedFile, Context.MODE_PRIVATE)
+                        var editor: SharedPreferences.Editor = shared.edit()
+                        editor.putString(CART, "")
+                        editor.apply()
+
+//                        CEK ADA TRANSFER/TIDAK, KALAU ADA -> Transfer Page & FINISH else FINISH
+                    } else if(obj.getString("status") == "failednostock") {
+                        val builder = MaterialAlertDialogBuilder(this)
+                        builder.setCancelable(false)
+                        builder.setTitle("Gagal Membuat Transaksi")
+                        builder.setMessage("Mohon maaf, terdapat barang yang tiba-tiba stoknya habis dan semua transaksi tidak dibuat.\nSilakan lakukan pembayaran ulang untuk barang lainnya.")
+                        builder.setPositiveButton("OK") { dialog, which ->
+                        }
+                        builder.create().show()
+                    }
+                    else{
+                        val builder = MaterialAlertDialogBuilder(this)
+                        builder.setCancelable(false)
+                        builder.setTitle("Terjadi Masalah")
+                        builder.setMessage("Terdapat Masalah Jaringan\nSilakan Coba Lagi Nanti.")
+                        builder.setPositiveButton("OK") { dialog, which ->
+                        }
+                        builder.create().show()
+                    }
+                },
+                Response.ErrorListener {
+                    val builder = MaterialAlertDialogBuilder(this)
+                    builder.setCancelable(false)
+                    builder.setTitle("Terjadi Masalah")
+                    builder.setMessage("Terdapat Masalah Jaringan\nSilakan Coba Lagi Nanti.")
+                    builder.setPositiveButton("OK") { dialog, which ->
+                    }
+                    builder.create().show()
+                }) {
+                override fun getParams(): MutableMap<String, String> {
+                    val params = HashMap<String, String>()
+                    for (i in 0 until cartList.size) {
+                        params["product_ids[$i]"] = cartList[i].item_id.toString()
+                        params["product_qtys[$i]"] = cartList[i].qty.toString()
+                        params["product_prices[$i]"] = cartList[i].item_price.toString()
+                        params["product_tenants[$i]"] = cartList[i].tenant_id.toString()
+                    }
+                    for (i in 0 until checkoutConfigs.size) {
+                        params["tenant_ids[$i]"] = checkoutConfigs[i].tenant_id.toString()
+                        params["tenant_deliveries[$i]"] = checkoutConfigs[i].tenant_id.toString()
+                        params["tenant_datetimes[$i]"] =  checkoutConfigs[i].date.toString() + " " + checkoutConfigs[i].time.toString()
+                        params["tenant_paymethods[$i]"] = checkoutConfigs[i].payment_method.toString()
+                    }
+                    params["unit_id"] = unit_id.toString()
+                    params["token"] = token
+                    return params
+                }
+            }
+            val retryPolicy = DefaultRetryPolicy(7500, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+            stringRequest.retryPolicy = retryPolicy;
+            stringRequest.setShouldCache(false)
+            q.add(stringRequest)
+        }
     }
 }

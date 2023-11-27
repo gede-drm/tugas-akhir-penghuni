@@ -25,7 +25,8 @@
             android:exported="false" />
         <activity
             android:name=".ShoppingCartActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ItemDetailActivity"
             android:exported="false"
