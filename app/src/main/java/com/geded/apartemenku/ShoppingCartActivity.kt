@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.DatePicker
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
@@ -24,6 +25,7 @@ import org.json.JSONObject
 class ShoppingCartActivity : AppCompatActivity() {
     private lateinit var binding: ActivityShoppingCartBinding
     var cartList:ArrayList<Cart> = arrayListOf()
+    var checkoutConfigs:ArrayList<ProCheckoutConfig> = arrayListOf()
     var token = ""
     companion object{
         val CART = "CART"
@@ -38,8 +40,17 @@ class ShoppingCartActivity : AppCompatActivity() {
 
         binding.cardViewPayment.isVisible = false
         binding.recViewShoppingCart.isVisible = false
+        binding.recViewCC.isVisible = false
+        binding.txtCC.isVisible = false
         binding.progressBarSC.isVisible = true
 
+        binding.btnCheckoutSC.setOnClickListener {
+            checkout()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
         getCart()
     }
 
@@ -47,6 +58,7 @@ class ShoppingCartActivity : AppCompatActivity() {
         cartList.clear()
         binding.cardViewPayment.isVisible = false
         binding.recViewShoppingCart.isVisible = false
+        binding.recViewCC.isVisible = false
         binding.progressBarSC.isVisible = true
 
         var shared: SharedPreferences = getSharedPreferences(Global.sharedFile, Context.MODE_PRIVATE)
@@ -100,19 +112,6 @@ class ShoppingCartActivity : AppCompatActivity() {
                                 builder.create().show()
                             }
 
-                            val cashStatus = obj.getString("cashStatus")
-                            if (cashStatus == "notallowed") {
-                                val spinnerAdapter = ArrayAdapter(this, R.layout.simple_list_item_1, arrayListOf("Transfer Bank"))
-                                spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                                binding.spinnerPaymentMethod.adapter = spinnerAdapter
-                                binding.txtNoCashCart.isVisible = true
-                            }else{
-                                val spinnerAdapter = ArrayAdapter(this, R.layout.simple_list_item_1, arrayListOf("Tunai", "Transfer Bank"))
-                                spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                                binding.spinnerPaymentMethod.adapter = spinnerAdapter
-                                binding.txtNoCashCart.isVisible = false
-                            }
-
                             val cartData = obj.getJSONArray("data")
                             for (i in 0 until cartData.length()) {
                                 val cartObj = cartData.getJSONObject(i)
@@ -132,6 +131,14 @@ class ShoppingCartActivity : AppCompatActivity() {
                             val total = Helper.formatter(obj.getDouble("total"))
                             binding.txtTotalCart.text = "Rp$total"
                             updateList()
+
+                            val tenantData = obj.getJSONArray("delivery")
+                            for(i in 0 until tenantData.length()){
+                                val tData = tenantData.getJSONObject(i)
+                                val tConfig = ProCheckoutConfig(tData.getInt("id"), tData.getString("tenant"), tData.getInt("cash"), tData.getInt("delivery"), tData.getString("open_hour"), tData.getString("close_hour"), null, null, null, null)
+                                checkoutConfigs.add(tConfig)
+                            }
+                            updateListConfig()
                         } else {
                             val builder = MaterialAlertDialogBuilder(this)
                             builder.setCancelable(false)
@@ -187,6 +194,16 @@ class ShoppingCartActivity : AppCompatActivity() {
         binding.cardViewPayment.isVisible = true
         binding.recViewShoppingCart.isVisible = true
         binding.progressBarSC.isVisible = false
+    }
+
+    fun updateListConfig(){
+        val lm:LinearLayoutManager = LinearLayoutManager(this)
+        var recyclerView = binding.recViewCC
+        recyclerView.layoutManager = lm
+        recyclerView.setHasFixedSize(true)
+        recyclerView.adapter = ProCheckoutConfigAdapter(checkoutConfigs, this)
+        recyclerView.isVisible = true
+        binding.txtCC.isVisible = true
     }
 
     fun deleteItem(item_id:Int, item_name:String){
