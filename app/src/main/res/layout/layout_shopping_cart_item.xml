@@ -94,7 +94,7 @@
                 android:text="Subtotal"
                 android:textColor="@color/md_theme_light_secondary"
                 android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/txtNoCashSCI"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imgViewItemSCI" />
 
@@ -103,18 +103,15 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="4dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="12dp"
                 android:fontFamily="sans-serif-medium"
                 android:text="Rp40,000.00"
                 android:textAlignment="textEnd"
                 android:textColor="@color/md_theme_light_secondary"
                 android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/btnDeleteItemSCI"
                 app:layout_constraintStart_toEndOf="@+id/textView21"
-                app:layout_constraintTop_toBottomOf="@+id/imgViewItemSCI" />
+                app:layout_constraintTop_toTopOf="@+id/textView21" />
 
             <ImageView
                 android:id="@+id/imgViewItemSCI"
@@ -125,6 +122,20 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/txtItemNameSCI"
                 app:srcCompat="@drawable/baseline_broken_image_24" />
+
+            <TextView
+                android:id="@+id/txtNoCashSCI"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="Toko Ini Tidak Menerima Pembayaran Tunai"
+                android:textColor="@color/md_theme_dark_onError"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

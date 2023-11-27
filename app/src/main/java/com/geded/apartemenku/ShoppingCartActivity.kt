@@ -1,11 +1,13 @@
 package com.geded.apartemenku
 
+import android.R
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
@@ -98,6 +100,19 @@ class ShoppingCartActivity : AppCompatActivity() {
                                 builder.create().show()
                             }
 
+                            val cashStatus = obj.getString("cashStatus")
+                            if (cashStatus == "notallowed") {
+                                val spinnerAdapter = ArrayAdapter(this, R.layout.simple_list_item_1, arrayListOf("Transfer Bank"))
+                                spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                                binding.spinnerPaymentMethod.adapter = spinnerAdapter
+                                binding.txtNoCashCart.isVisible = true
+                            }else{
+                                val spinnerAdapter = ArrayAdapter(this, R.layout.simple_list_item_1, arrayListOf("Tunai", "Transfer Bank"))
+                                spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                                binding.spinnerPaymentMethod.adapter = spinnerAdapter
+                                binding.txtNoCashCart.isVisible = false
+                            }
+
                             val cartData = obj.getJSONArray("data")
                             for (i in 0 until cartData.length()) {
                                 val cartObj = cartData.getJSONObject(i)
@@ -108,7 +123,8 @@ class ShoppingCartActivity : AppCompatActivity() {
                                     cartObj.getDouble("price"),
                                     cartObj.getDouble("subtotal"),
                                     cartObj.getString("tenant_name"),
-                                    cartObj.getString("photo_url")
+                                    cartObj.getString("photo_url"),
+                                    cartObj.getInt("cash")
                                 )
                                 cartList.add(cartListItem)
                             }

@@ -2,6 +2,7 @@ package com.geded.apartemenku
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.geded.apartemenku.databinding.LayoutShoppingCartItemBinding
@@ -31,6 +32,12 @@ class ShoppingCartAdapter(val cartItems:ArrayList<Cart>, val context: FragmentAc
             txtItemPriceSCI.text = "Rp$price/pc"
             txtItemQtySCI.text = "x" + cartItems[position].qty.toString()
             txtItemSubTotalSCI.text = "Rp$subtotal"
+            if(cartItems[position].cash == 0){
+                txtNoCashSCI.isVisible = true
+            }
+            else{
+                txtNoCashSCI.isVisible = false
+            }
         }
         holder.binding.btnDeleteItemSCI.setOnClickListener {
             (context as ShoppingCartActivity).deleteItem(cartItems[position].item_id, cartItems[position].item_name)

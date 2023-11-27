@@ -83,13 +83,13 @@
                 android:textSize="18sp"
                 app:layout_constraintBottom_toTopOf="@+id/button"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/spinnerPaymentMethod" />
+                app:layout_constraintTop_toBottomOf="@+id/txtNoCashCart" />
 
             <TextView
                 android:id="@+id/txtTotalCart"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
                 android:layout_marginBottom="16dp"
                 android:fontFamily="sans-serif-medium"
@@ -98,7 +98,7 @@
                 android:textSize="18sp"
                 app:layout_constraintBottom_toTopOf="@+id/button"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/spinnerPaymentMethod" />
+                app:layout_constraintTop_toBottomOf="@+id/txtNoCashCart" />
 
             <Button
                 android:id="@+id/button"
@@ -114,6 +114,7 @@
 
             <Spinner
                 android:id="@+id/spinnerPaymentMethod"
+                style="@style/ApartemenKuAppTheme"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="24dp"
@@ -132,6 +133,20 @@
                 android:textColor="@android:color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/txtNoCashCart"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:text="Pembayaran Hanya Dapat dilakukan via Transfer Bank.\nTerdapat Tenant yang Tidak Menerima Pembayaran Tunai"
+                android:textAlignment="center"
+                android:textColor="@color/md_theme_dark_onError"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinnerPaymentMethod" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
