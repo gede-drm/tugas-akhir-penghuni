@@ -61,6 +61,9 @@ class PackageListActivity : AppCompatActivity() {
                     binding.recViewPkgList.visibility = View.INVISIBLE
                     binding.progressBarPkgList.visibility = View.INVISIBLE
                 }
+                else if(obj.getString("status")=="notauthenticated"){
+                    Helper.logoutSystem(this)
+                }
             },
             Response.ErrorListener {
                 val builder = MaterialAlertDialogBuilder(this)

@@ -2,6 +2,7 @@ package com.geded.apartemenku
 
 import android.R
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -69,6 +70,7 @@ class ShoppingCartActivity : AppCompatActivity() {
         if(cart == "") {
             binding.cardViewPayment.isVisible = false
             binding.recViewShoppingCart.isVisible = false
+            binding.recViewCC.isVisible = false
             binding.txtEmptySC.isVisible = true
             binding.progressBarSC.isVisible = false
         }
@@ -168,6 +170,9 @@ class ShoppingCartActivity : AppCompatActivity() {
                             builder.setPositiveButton("OK") { dialog, which ->
                             }
                             builder.create().show()
+                        }
+                        else if(obj.getString("status")=="notauthenticated"){
+                            Helper.logoutSystem(this)
                         } else {
                             val builder = MaterialAlertDialogBuilder(this)
                             builder.setCancelable(false)
@@ -293,7 +298,31 @@ class ShoppingCartActivity : AppCompatActivity() {
                         editor.putString(CART, "")
                         editor.apply()
 
-//                        CEK ADA TRANSFER/TIDAK, KALAU ADA -> Transfer Page & FINISH else FINISH
+                        cartList.clear()
+
+                        binding.cardViewPayment.isVisible = false
+                        binding.recViewShoppingCart.isVisible = false
+                        binding.recViewCC.isVisible = false
+                        binding.txtEmptySC.isVisible = true
+                        binding.progressBarSC.isVisible = false
+
+                        var transferPayment = false
+                        checkoutConfigs.forEach{ cc->
+                            if(cc.payment_method == "transfer"){
+                                transferPayment = true
+                            }
+                        }
+
+                        checkoutConfigs.clear()
+
+                        if(transferPayment == true){
+                            val intent = Intent(this, TransferPaymentActivity::class.java)
+                            startActivity(intent)
+                            this.finish()
+                        }
+                        else{
+                            this.finish()
+                        }
                     } else if(obj.getString("status") == "failednostock") {
                         val builder = MaterialAlertDialogBuilder(this)
                         builder.setCancelable(false)
@@ -302,6 +331,9 @@ class ShoppingCartActivity : AppCompatActivity() {
                         builder.setPositiveButton("OK") { dialog, which ->
                         }
                         builder.create().show()
+                    }
+                    else if(obj.getString("status")=="notauthenticated"){
+                        Helper.logoutSystem(this)
                     }
                     else{
                         val builder = MaterialAlertDialogBuilder(this)

@@ -53,6 +53,7 @@ class ProfileFragment : Fragment() {
                         editor.putInt(LoginActivity.RESIDENTID, 0)
                         editor.putString(LoginActivity.UNITNO, "")
                         editor.putString(LoginActivity.HOLDERNAME, "")
+                        editor.putString(ShoppingCartActivity.CART, "")
                         editor.putString(LoginActivity.TOKEN, "")
                         editor.apply()
 
@@ -61,6 +62,9 @@ class ProfileFragment : Fragment() {
                             fragmentActivity.startActivity(intent)
                             fragmentActivity.finish()
                         }
+                    }
+                    else if(obj.getString("status")=="notauthenticated"){
+                        Helper.logoutSystem(this.requireActivity())
                     }
                     else{
                         val builder = activity?.let { context -> MaterialAlertDialogBuilder(context) }

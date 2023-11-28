@@ -85,6 +85,9 @@ class ProductTenantActivity : AppCompatActivity() {
                     binding.recViewPTen.visibility = View.INVISIBLE
                     binding.progressBarPTen.visibility = View.INVISIBLE
                 }
+                else if(obj.getString("status")=="notauthenticated"){
+                    Helper.logoutSystem(this)
+                }
             },
             Response.ErrorListener {
                 val builder = MaterialAlertDialogBuilder(this)

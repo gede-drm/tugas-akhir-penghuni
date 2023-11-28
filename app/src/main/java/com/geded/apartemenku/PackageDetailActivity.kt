@@ -98,6 +98,9 @@ class PackageDetailActivity : AppCompatActivity() {
                         binding.btnShowQRDetailPkg.isVisible = true
                     }
                 }
+                else if(obj.getString("status")=="notauthenticated"){
+                    Helper.logoutSystem(this)
+                }
                 else{
                     val builder = MaterialAlertDialogBuilder(this)
                     builder.setCancelable(false)

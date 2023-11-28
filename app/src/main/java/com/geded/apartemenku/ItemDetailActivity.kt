@@ -246,6 +246,9 @@ class ItemDetailActivity : AppCompatActivity() {
                     }
                     builder.create().show()
                 }
+                else if(obj.getString("status")=="notauthenticated"){
+                    Helper.logoutSystem(this)
+                }
                 else{
                     val builder = MaterialAlertDialogBuilder(this)
                     builder.setCancelable(false)
