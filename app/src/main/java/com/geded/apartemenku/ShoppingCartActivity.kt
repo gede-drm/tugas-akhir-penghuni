@@ -285,7 +285,7 @@ class ShoppingCartActivity : AppCompatActivity() {
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
         } else {
             val q = Volley.newRequestQueue(this)
-            val url = Global.urlWS + "tenant/productcheckout"
+            val url = Global.urlWS + "transaction/productcheckout"
 
             var stringRequest = object : StringRequest(
                 Method.POST, url, Response.Listener {
