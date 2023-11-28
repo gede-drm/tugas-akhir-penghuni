@@ -323,7 +323,7 @@ class ItemDetailActivity : AppCompatActivity() {
                 editor.putString(ShoppingCartActivity.CART, Gson().toJson(itemCarts))
                 editor.apply()
 
-                Toast.makeText(this, "Item Berhasil  dimasukkan ke Keranjang", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Item Berhasil dimasukkan ke Keranjang", Toast.LENGTH_SHORT).show()
             }
         }
         else{

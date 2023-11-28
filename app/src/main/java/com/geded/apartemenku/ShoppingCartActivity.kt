@@ -306,8 +306,8 @@ class ShoppingCartActivity : AppCompatActivity() {
                     else{
                         val builder = MaterialAlertDialogBuilder(this)
                         builder.setCancelable(false)
-                        builder.setTitle("Terjadi Masalah")
-                        builder.setMessage("Terdapat Masalah Jaringan\nSilakan Coba Lagi Nanti.")
+                        builder.setTitle("Gagal Membuat Transaksi")
+                        builder.setMessage("Terdapat Masalah pada Server\nSilakan Coba Lagi Nanti.")
                         builder.setPositiveButton("OK") { dialog, which ->
                         }
                         builder.create().show()
@@ -332,7 +332,7 @@ class ShoppingCartActivity : AppCompatActivity() {
                     }
                     for (i in 0 until checkoutConfigs.size) {
                         params["tenant_ids[$i]"] = checkoutConfigs[i].tenant_id.toString()
-                        params["tenant_deliveries[$i]"] = checkoutConfigs[i].tenant_id.toString()
+                        params["tenant_deliveries[$i]"] = checkoutConfigs[i].delivery_method.toString()
                         params["tenant_datetimes[$i]"] =  checkoutConfigs[i].date.toString() + " " + checkoutConfigs[i].time.toString()
                         params["tenant_paymethods[$i]"] = checkoutConfigs[i].payment_method.toString()
                     }
