@@ -143,7 +143,7 @@ class ProCheckoutConfigAdapter (val checkoutConfigs:ArrayList<ProCheckoutConfig>
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 view: View?,
-                position: Int,
+                pos: Int,
                 id: Long
             ) {
                 if (holder.binding.spinnerDeliveryCC.selectedItem.toString() == "Ambil"){
@@ -163,7 +163,7 @@ class ProCheckoutConfigAdapter (val checkoutConfigs:ArrayList<ProCheckoutConfig>
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 view: View?,
-                position: Int,
+                pos: Int,
                 id: Long
             ) {
                 if (holder.binding.spinnerPaymentCC.selectedItem.toString() == "Tunai"){

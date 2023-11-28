@@ -137,12 +137,37 @@ class ShoppingCartActivity : AppCompatActivity() {
                             updateList()
 
                             val tenantData = obj.getJSONArray("delivery")
-                            for(i in 0 until tenantData.length()){
+                            checkoutConfigs.clear()
+                            for (i in 0 until tenantData.length()) {
                                 val tData = tenantData.getJSONObject(i)
-                                val tConfig = ProCheckoutConfig(tData.getInt("id"), tData.getString("tenant"), tData.getInt("cash"), tData.getInt("delivery"), tData.getString("open_hour"), tData.getString("close_hour"), null, null, null, null)
+                                val tConfig = ProCheckoutConfig(
+                                    tData.getInt("id"),
+                                    tData.getString("tenant"),
+                                    tData.getInt("cash"),
+                                    tData.getInt("delivery"),
+                                    tData.getString("open_hour"),
+                                    tData.getString("close_hour"),
+                                    null,
+                                    null,
+                                    null,
+                                    null
+                                )
                                 checkoutConfigs.add(tConfig)
                             }
                             updateListConfig()
+                        } else if(obj.getString("status") == "allempty") {
+                            binding.cardViewPayment.isVisible = false
+                            binding.recViewShoppingCart.isVisible = false
+                            binding.txtEmptySC.isVisible = true
+                            binding.progressBarSC.isVisible = false
+
+                            val builder = MaterialAlertDialogBuilder(this)
+                            builder.setCancelable(false)
+                            builder.setTitle("Yahh :(")
+                            builder.setMessage("Mohon Maaf, Semua Barang di Keranjang Anda Telah Habis Stoknya dan Telah dikeluarkan dari Keranjang Anda.")
+                            builder.setPositiveButton("OK") { dialog, which ->
+                            }
+                            builder.create().show()
                         } else {
                             val builder = MaterialAlertDialogBuilder(this)
                             builder.setCancelable(false)
