@@ -1,6 +1,7 @@
 package com.geded.apartemenku
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -42,6 +43,7 @@ class ItemDetailActivity : AppCompatActivity() {
         token = shared.getString(LoginActivity.TOKEN, "").toString()
 
         binding.scrollViewItemDetail.isVisible = false
+        binding.txtPermissionNeedItemDetail.isVisible = false
 
         if(item_type == "product"){
             binding.btnAddToCartItemDetail.text = "Tambahkan ke Keranjang"
@@ -68,10 +70,28 @@ class ItemDetailActivity : AppCompatActivity() {
             getProductDetail()
         }
         else {
-            binding.btnSubtItemDetail.isVisible = false
-            binding.btnPlusItemDetail.isVisible = false
-            binding.txtNumCartDetail.isVisible = false
+            binding.btnSubtItemDetail.setOnClickListener {
+                var count = binding.txtNumCartDetail.text.toString().toInt()
+                if(count > 1){
+                    count--
+                    binding.txtNumCartDetail.setText(count.toString())
+                }
+                else{
+                    Toast.makeText(this, "Jumlah Item Tidak Dapat Kurang dari 0", Toast.LENGTH_SHORT).show()
+                }
+            }
+            binding.btnPlusItemDetail.setOnClickListener {
+                var count = binding.txtNumCartDetail.text.toString().toInt()
+                if(count >= 1){
+                    count++
+                    binding.txtNumCartDetail.setText(count.toString())
+                }
+            }
             binding.btnAddToCartItemDetail.text = "Beli Sekarang"
+            binding.btnAddToCartItemDetail.setOnClickListener {
+                val intent = Intent(this, CheckoutServiceActivity::class.java)
+                startActivity(intent)
+            }
             getServiceDetail()
         }
     }
@@ -205,6 +225,14 @@ class ItemDetailActivity : AppCompatActivity() {
                             pricePer = "Jam"
                         } else {
                             pricePer = "Paket"
+                        }
+
+                        val permitNeed = itemObj.getString("permit_need").toInt()
+                        if(permitNeed == 1) {
+                            binding.txtPermissionNeedItemDetail.isVisible = true
+                        }
+                        else{
+                            binding.txtPermissionNeedItemDetail.isVisible = false
                         }
 
                         Picasso.get().load(photo_url).into(binding.imgViewItemDetail)
