@@ -89,8 +89,17 @@ class ItemDetailActivity : AppCompatActivity() {
             }
             binding.btnAddToCartItemDetail.text = "Beli Sekarang"
             binding.btnAddToCartItemDetail.setOnClickListener {
+                var count = binding.txtNumCartDetail.text.toString().toInt()
+
+                if(count > 0){
                 val intent = Intent(this, CheckoutServiceActivity::class.java)
-                startActivity(intent)
+                    intent.putExtra(CheckoutServiceActivity.SERVICE_ID, item_id)
+                    intent.putExtra(CheckoutServiceActivity.SERVICE_QTY, count)
+                    startActivity(intent)
+                }
+                else{
+                    Toast.makeText(this, "Jumlah Item Tidak Dapat Kurang dari 0", Toast.LENGTH_SHORT).show()
+                }
             }
             getServiceDetail()
         }

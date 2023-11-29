@@ -24,7 +24,7 @@
             android:name=".BuyServiceActivity"
             android:exported="false" />
         <activity
-            android:name=".CheckoutActivity"
+            android:name=".CheckoutServiceActivity"
             android:exported="false" />
         <activity
             android:name=".ShoppingCartActivity"
