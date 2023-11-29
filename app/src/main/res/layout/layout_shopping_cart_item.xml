@@ -57,7 +57,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
+                android:ellipsize="end"
                 android:fontFamily="@font/public_sans_semibold"
+                android:maxLines="2"
                 android:text="Nama Barang"
                 android:textColor="@color/md_theme_light_secondary"
                 android:textSize="16sp"
@@ -88,7 +90,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="12dp"
                 android:layout_marginBottom="12dp"
                 android:fontFamily="sans-serif-medium"
                 android:text="Subtotal"
@@ -103,6 +105,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
                 android:layout_marginEnd="8dp"
                 android:fontFamily="sans-serif-medium"
                 android:text="Rp40,000.00"
@@ -111,7 +114,7 @@
                 android:textSize="16sp"
                 app:layout_constraintEnd_toStartOf="@+id/btnDeleteItemSCI"
                 app:layout_constraintStart_toEndOf="@+id/textView21"
-                app:layout_constraintTop_toTopOf="@+id/textView21" />
+                app:layout_constraintTop_toBottomOf="@+id/imgViewItemSCI" />
 
             <ImageView
                 android:id="@+id/imgViewItemSCI"

@@ -27,6 +27,7 @@ import java.io.ByteArrayOutputStream
 class TransferPaymentActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTransferPaymentBinding
     var transferTransactions:ArrayList<TransferTransaction> = arrayListOf()
+    var tfTrxPosition = -1
     val REQUEST_GALLERY = 2
     var unit_id = 0
     var token = ""
@@ -41,14 +42,13 @@ class TransferPaymentActivity : AppCompatActivity() {
         var shared: SharedPreferences = getSharedPreferences(Global.sharedFile, Context.MODE_PRIVATE)
         unit_id = shared.getInt(LoginActivity.RESIDENTID, 0)
         token = shared.getString(LoginActivity.TOKEN, "").toString()
-    }
 
-    override fun onResume() {
-        super.onResume()
         getData()
     }
 
-    fun pickPicture(){
+    fun pickPicture(position:Int){
+        tfTrxPosition = position
+
         val i = Intent()
         i.type = "image/*"
         i.action = Intent.ACTION_PICK
@@ -64,7 +64,7 @@ class TransferPaymentActivity : AppCompatActivity() {
         when (requestCode) {
             REQUEST_GALLERY -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    pickPicture()
+                    pickPicture(tfTrxPosition)
                 } else {
                     Toast.makeText(this, "Anda harus memperbolehkan akses aplikasi ke penyimpanan", Toast.LENGTH_LONG).show()
                 }
@@ -78,8 +78,16 @@ class TransferPaymentActivity : AppCompatActivity() {
             if(requestCode == REQUEST_GALLERY){
                 val extras = data?.data
                 val imageBitmap: Bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, extras)
-                tempImageExtras = extras
                 tempUriBase64 = getImageUriFromBitmap(imageBitmap)
+
+                if(tfTrxPosition != -1){
+                    transferTransactions[tfTrxPosition].extrasImage = extras
+                    transferTransactions[tfTrxPosition].base64Image = tempUriBase64
+
+                    tfTrxPosition = -1
+
+                    updateList()
+                }
             }
         }
     }
@@ -106,7 +114,7 @@ class TransferPaymentActivity : AppCompatActivity() {
                     val data = obj.getJSONArray("data")
                     for (i in 0 until data.length()) {
                         var tfObj = data.getJSONObject(i)
-                        val tf = TransferTransaction(tfObj.getInt("id"), tfObj.getString("transaction_date"), tfObj.getDouble("total_payment"), tfObj.getString("finish_date"), tfObj.getString("tenant_name"), tfObj.getString("bank_name"),tfObj.getString("account_holder"), tfObj.getString("account_number"), null)
+                        val tf = TransferTransaction(tfObj.getInt("id"), tfObj.getString("transaction_date"), tfObj.getDouble("total_payment"), tfObj.getString("finish_date"), tfObj.getString("tenant_name"), tfObj.getString("bank_name"),tfObj.getString("account_holder"), tfObj.getString("account_number"), null, null)
                         transferTransactions.add(tf)
                     }
                     updateList()
@@ -152,15 +160,61 @@ class TransferPaymentActivity : AppCompatActivity() {
 
     fun updateList(){
         val lm: LinearLayoutManager = LinearLayoutManager(this)
+        val adapter = TransferTransactionListAdapter(transferTransactions, this)
         var recyclerView = binding.recViewTFCheckout
         recyclerView.layoutManager = lm
         recyclerView.setHasFixedSize(true)
-        recyclerView.adapter = TransferTransactionListAdapter(transferTransactions, this)
+        adapter.notifyDataSetChanged()
+        recyclerView.adapter = adapter
         recyclerView.isVisible = true
         binding.progressBarTF.visibility = View.GONE
     }
 
-    fun uploadProof(){
-        getData()
+    fun uploadProof(position: Int){
+        val q = Volley.newRequestQueue(this)
+        val url = Global.urlWS + "transaction/uploadtransferproof"
+
+        var stringRequest = object : StringRequest(
+            Method.POST, url, Response.Listener {
+                Log.d("VOLLEY", it)
+                val obj = JSONObject(it)
+                if (obj.getString("status") == "success") {
+                    val message = "Bukti Transfer untuk Transaksi " + transferTransactions[position].tenant_name + " (Tgl Transaksi: " + transferTransactions[position].transaction_date +") Berhasil diunggah!"
+                    Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+                    getData()
+                } else if (obj.getString("status") == "notauthenticated") {
+                    binding.progressBarTF.visibility = View.GONE
+                    Helper.logoutSystem(this)
+                }
+                else{
+                    binding.progressBarTF.visibility = View.GONE
+                    val builder = MaterialAlertDialogBuilder(this)
+                    builder.setCancelable(false)
+                    builder.setTitle("Terjadi Masalah")
+                    builder.setMessage("Terdapat Masalah Jaringan\nSilakan Coba Lagi Nanti.")
+                    builder.setPositiveButton("OK") { dialog, which ->
+                    }
+                    builder.create().show()
+                }
+            }, Response.ErrorListener {
+                val builder = MaterialAlertDialogBuilder(this)
+                builder.setCancelable(false)
+                builder.setTitle("Terjadi Masalah")
+                builder.setMessage("Terdapat Masalah Jaringan\nSilakan Coba Lagi Nanti.")
+                builder.setPositiveButton("OK") { dialog, which ->
+                    finish()
+                }
+                builder.create().show()
+            }) {
+            override fun getParams(): MutableMap<String, String> {
+                val params = HashMap<String, String>()
+                params["transaction_id"] = transferTransactions[position].id.toString()
+                params["proof_image"] = transferTransactions[position].base64Image.toString()
+                params["token"] = token
+                return params
+            }
+        }
+        stringRequest.setShouldCache(false)
+        q.add(stringRequest)
     }
 }

@@ -18,7 +18,8 @@
         <activity
             android:name=".TransferPaymentActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait">
+        </activity>
         <activity
             android:name=".BuyServiceActivity"
             android:exported="false" />
@@ -67,7 +68,6 @@
             android:name=".MainActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
-
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

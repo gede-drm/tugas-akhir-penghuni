@@ -30,21 +30,35 @@ class TransferTransactionListAdapter (val tfTransactions:ArrayList<TransferTrans
     override fun onBindViewHolder(holder: TransferTransactionListViewHolder, position: Int) {
         val total_payment = Helper.formatter(tfTransactions[position].total_payment)
         with(holder.binding) {
-            txtTrxDateTF.text = tfTransactions[position].transaction_date
+            txtTrxDateTF.text = "Tanggal Transaksi: " + tfTransactions[position].transaction_date
             txtTenNameTF.text = tfTransactions[position].tenant_name
-            txtFinishDateTF.text = tfTransactions[position].finish_date
+            txtFinishDateTF.text = "Tanggal Kirim/Ambil: " + tfTransactions[position].finish_date
             txtTotalTrxTF.text = "Rp$total_payment"
-            txtBankNameTF.text = tfTransactions[position].bank_name + " a.n. " + tfTransactions[position].account_holder
+            txtBankNameTF.text =
+                tfTransactions[position].bank_name + " a.n. " + tfTransactions[position].account_holder
             txtBAccNumTF.text = tfTransactions[position].account_number
         }
-
         holder.binding.btnCopyBankAccTF.setOnClickListener {
-            val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clipData = ClipData.newPlainText("account_number", tfTransactions[position].account_number)
+            val clipboardManager =
+                context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clipData =
+                ClipData.newPlainText("account_number", tfTransactions[position].account_number)
             clipboardManager.setPrimaryClip(clipData)
             Toast.makeText(context, "Nomor Rekening telah disalin", Toast.LENGTH_SHORT).show()
         }
-        holder.binding.btnPickProofTF.setOnClickListener {  }
-        holder.binding.btnUploadProofTF.setOnClickListener {  }
+        holder.binding.btnPickProofTF.setOnClickListener {
+            (context as TransferPaymentActivity).pickPicture(position)
+        }
+        holder.binding.btnUploadProofTF.setOnClickListener {
+            if(tfTransactions[position].base64Image != null) {
+                (context as TransferPaymentActivity).uploadProof(position)
+            }
+            else{
+                Toast.makeText(context, "Silakan Pilih Bukti Transfer Telebih Dahulu!", Toast.LENGTH_SHORT).show()
+            }
+        }
+        if (tfTransactions[position].base64Image != null) {
+            holder.binding.imgProofTF.setImageURI(tfTransactions[position].extrasImage)
+        }
     }
 }
