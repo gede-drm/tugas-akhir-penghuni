@@ -104,7 +104,7 @@ class TransferPaymentActivity : AppCompatActivity() {
     fun getData() {
         transferTransactions.clear()
         val q = Volley.newRequestQueue(this)
-        val url = Global.urlWS + "transaction/getunpaidtransactions"
+        val url = Global.urlWS + "transaction/getunpaidprotransactions"
 
         var stringRequest = object : StringRequest(
             Method.POST, url, Response.Listener {
