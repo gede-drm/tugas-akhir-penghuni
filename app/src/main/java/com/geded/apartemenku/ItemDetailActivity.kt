@@ -92,7 +92,7 @@ class ItemDetailActivity : AppCompatActivity() {
                 var count = binding.txtNumCartDetail.text.toString().toInt()
 
                 if(count > 0){
-                val intent = Intent(this, CheckoutServiceActivity::class.java)
+                    val intent = Intent(this, CheckoutServiceActivity::class.java)
                     intent.putExtra(CheckoutServiceActivity.SERVICE_ID, item_id)
                     intent.putExtra(CheckoutServiceActivity.SERVICE_QTY, count)
                     startActivity(intent)

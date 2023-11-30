@@ -8,10 +8,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
+import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
@@ -34,10 +36,14 @@ class CheckoutServiceActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCheckoutServiceBinding
     var service_id = 0
     var service_qty = 0
+    var service_price = 0
+    var service_delivery = ""
+    var paymethod = ""
     var tenant_openhour = ""
     var tenant_closehour = ""
     var date_chose = ""
     var time_chose = ""
+    var tenant_type = ""
     var unit_id = 0
     var token = ""
     companion object{
@@ -126,7 +132,62 @@ class CheckoutServiceActivity : AppCompatActivity() {
                 Toast.makeText(this, "Silakan pilih tanggal kirim/ambil terlebih dahulu!", Toast.LENGTH_SHORT).show()
             }
         }
+        binding.spinnerDeliveryCS.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                pos: Int,
+                id: Long
+            ) {
+                if (binding.spinnerDeliveryCS.selectedItem.toString() == "Taruh-Ambil Sendiri") {
+                    service_delivery = "pickup"
+                } else {
+                    service_delivery = "delivery"
+                }
+            }
 
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+        }
+        binding.spinnerPaymentCS.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                pos: Int,
+                id: Long
+            ) {
+                if (binding.spinnerPaymentCS.selectedItem.toString() == "Tunai") {
+                    paymethod = "cash"
+                } else {
+                    paymethod = "transfer"
+                }
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+        }
+        binding.btnCheckoutCS.setOnClickListener {
+            if(service_id != 0 && service_qty != 0 && service_price != 0){
+                if(paymethod != "" && date_chose != "" && time_chose != ""){
+                    if(tenant_type == "other"){
+                        service_delivery = "delivery"
+                        checkout()
+                    }
+                    else{
+                        if(service_delivery != null){
+                            checkout()
+                        }
+                        else{
+                            Toast.makeText(this, "Silakan pilih kirim/ambil untuk pengerjaan terlebih dahulu!", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+                else{
+                    Toast.makeText(this, "Silakan pilih metode pembayaran, tanggal dan waktu kirim/ambil terlebih dahulu!", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
         getData()
     }
 
@@ -147,6 +208,8 @@ class CheckoutServiceActivity : AppCompatActivity() {
                     val dataObj = obj.getJSONObject("data")
                     val url = dataObj.getString("photo_url")
                     Picasso.get().load(url).into(binding.imgViewItemCS)
+
+                    service_price = dataObj.getDouble("price").toInt()
                     val price = Helper.formatter(dataObj.getDouble("price"))
                     var pricePer = dataObj.getString("pricePer")
                     if(pricePer == "hour"){
@@ -163,7 +226,8 @@ class CheckoutServiceActivity : AppCompatActivity() {
                     binding.txtItemQtyCS.text = "x" + dataObj.getInt("quantity").toString()
 
                     val tenantObj = obj.getJSONObject("tenant")
-                    if(tenantObj.getString("tenant_type") == "laundry"){
+                    tenant_type  = tenantObj.getString("tenant_type")
+                    if(tenant_type == "laundry"){
                         binding.txtDeliveryCS.isVisible = true
                         binding.spinnerDeliveryCS.isVisible = true
 
@@ -179,6 +243,7 @@ class CheckoutServiceActivity : AppCompatActivity() {
                         }
                     }
                     else{
+                        service_delivery = "delivery"
                         binding.txtDeliveryCS.isVisible = false
                         binding.spinnerDeliveryCS.isVisible = false
                     }
@@ -245,7 +310,60 @@ class CheckoutServiceActivity : AppCompatActivity() {
         stringRequest.setShouldCache(false)
         q.add(stringRequest)
     }
-    fun checkout(){
-
+    fun checkout() {
+        val q = Volley.newRequestQueue(this)
+        val url = Global.urlWS + "transaction/servicecheckout"
+        var stringRequest = object : StringRequest(
+            Method.POST, url, Response.Listener {
+                Log.d("VOLLEY", it)
+                val obj = JSONObject(it)
+                if (obj.getString("status") == "success") {
+                    Toast.makeText(this, "Transaksi Berhasil!", Toast.LENGTH_SHORT).show()
+                } else if (obj.getString("status") == "failednostock") {
+                    val builder = MaterialAlertDialogBuilder(this)
+                    builder.setCancelable(false)
+                    builder.setTitle("Gagal Membuat Transaksi")
+                    builder.setMessage("Mohon maaf, terdapat barang yang tiba-tiba stoknya habis dan semua transaksi tidak dibuat.\nSilakan lakukan pembayaran ulang untuk barang lainnya.")
+                    builder.setPositiveButton("OK") { dialog, which ->
+                    }
+                    builder.create().show()
+                } else if (obj.getString("status") == "notauthenticated") {
+                    Helper.logoutSystem(this)
+                } else {
+                    val builder = MaterialAlertDialogBuilder(this)
+                    builder.setCancelable(false)
+                    builder.setTitle("Gagal Membuat Transaksi")
+                    builder.setMessage("Terdapat Masalah pada Server\nSilakan Coba Lagi Nanti.")
+                    builder.setPositiveButton("OK") { dialog, which ->
+                    }
+                    builder.create().show()
+                }
+            },
+            Response.ErrorListener {
+                val builder = MaterialAlertDialogBuilder(this)
+                builder.setCancelable(false)
+                builder.setTitle("Terjadi Masalah")
+                builder.setMessage("Terdapat Masalah Jaringan\nSilakan Coba Lagi Nanti.")
+                builder.setPositiveButton("OK") { dialog, which ->
+                }
+                builder.create().show()
+            }) {
+            override fun getParams(): MutableMap<String, String> {
+                val params = HashMap<String, String>()
+                params["unit_id"] = unit_id.toString()
+                params["service_id"] = service_id.toString()
+                params["service_qty"] = service_qty.toString()
+                params["service_price"] = service_price.toString()
+                params["delivery"] = service_delivery
+                params["datetime"] = "$date_chose $time_chose"
+                params["paymethod"] = paymethod
+                params["token"] = token
+                return params
+            }
+        }
+        val retryPolicy = DefaultRetryPolicy(7500, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        stringRequest.retryPolicy = retryPolicy;
+        stringRequest.setShouldCache(false)
+        q.add(stringRequest)
     }
 }
