@@ -7,7 +7,7 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:text="15-11-2023"
+                android:text="15-11-2023 20:00:00"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -66,7 +66,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="4dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider3"
+                app:layout_constraintTop_toBottomOf="@+id/txtTenNameTL"
                 app:srcCompat="@drawable/baseline_broken_image_24" />
 
             <TextView
@@ -74,17 +74,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="6dp"
                 android:text="Total Transaksi"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toTopOf="@+id/txtTotalPriceTL"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtRemainingQtyTL" />
 
             <TextView
                 android:id="@+id/txtTotalPriceTL"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="12dp"
                 android:fontFamily="@font/public_sans_semibold"
                 android:text="Rp220,000.00"
                 android:textColor="@color/md_theme_light_secondary"
@@ -113,6 +115,19 @@
                 android:text="Product Name"
                 android:textColor="@android:color/black"
                 app:layout_constraintStart_toEndOf="@+id/imgProductTL"
+                app:layout_constraintTop_toBottomOf="@+id/txtTenNameTL" />
+
+            <TextView
+                android:id="@+id/txtTenNameTL"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="Tenant Name"
+                android:textColor="@android:color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/divider3" />
 
             <TextView
