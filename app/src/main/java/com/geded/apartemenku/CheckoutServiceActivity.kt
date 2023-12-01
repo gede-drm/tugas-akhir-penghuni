@@ -2,6 +2,7 @@ package com.geded.apartemenku
 
 import android.R
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -318,7 +319,17 @@ class CheckoutServiceActivity : AppCompatActivity() {
                 Log.d("VOLLEY", it)
                 val obj = JSONObject(it)
                 if (obj.getString("status") == "success") {
+                    val transaction_id = obj.getInt("id")
                     Toast.makeText(this, "Transaksi Berhasil!", Toast.LENGTH_SHORT).show()
+                    if(paymethod == "transfer") {
+                        val intent = Intent(this, ServiceTransferPaymentActivity::class.java)
+                        intent.putExtra(ServiceTransferPaymentActivity.TRX_ID, transaction_id)
+                        startActivity(intent)
+                        finish()
+                    }
+                    else{
+                        finish()
+                    }
                 } else if (obj.getString("status") == "failednostock") {
                     val builder = MaterialAlertDialogBuilder(this)
                     builder.setCancelable(false)
