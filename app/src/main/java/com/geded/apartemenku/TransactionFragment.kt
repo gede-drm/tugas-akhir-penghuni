@@ -1,11 +1,16 @@
 package com.geded.apartemenku
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,6 +29,9 @@ class TransactionFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        var shared: SharedPreferences = requireActivity().getSharedPreferences(Global.sharedFile, Context.MODE_PRIVATE)
+        unit_id = shared.getInt(LoginActivity.RESIDENTID, 0)
+        token = shared.getString(LoginActivity.TOKEN, "").toString()
     }
 
     override fun onCreateView(
@@ -35,12 +43,31 @@ class TransactionFragment : Fragment() {
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-        getData()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.txtSearchTrxTen.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
+            if(actionId == EditorInfo.IME_ACTION_DONE){
+                val search = binding.txtSearchTrxTen.text.toString()
+                getData(search)
+
+                true
+            }
+            else {
+                false
+            }
+        })
     }
 
-    fun getData(){
+    override fun onResume() {
+        super.onResume()
+        binding.recViewTrxList.visibility = View.INVISIBLE
+        binding.progressBarListTen.visibility = View.VISIBLE
+        val search = binding.txtSearchTrxTen.text.toString()
+        getData(search)
+    }
+
+    fun getData(search:String){
         transactions.clear();
         val q = Volley.newRequestQueue(this.context)
         val url = Global.urlWS + "transaction/list"
@@ -89,8 +116,9 @@ class TransactionFragment : Fragment() {
             }){
             override fun getParams(): MutableMap<String, String> {
                 val params = HashMap<String, String>()
-                params["token"] = token
+                params["search"] = search
                 params["unit_id"] = unit_id.toString()
+                params["token"] = token
                 return params
             }
         }
@@ -105,8 +133,9 @@ class TransactionFragment : Fragment() {
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = TransactionListAdapter(transactions, requireActivity())
         recyclerView.isVisible = true
-        binding.txtEmptyTrxList.visibility = View.GONE
-        binding.progressBarListTen.visibility = View.GONE
+        binding.txtEmptyTrxList.visibility = View.INVISIBLE
+        binding.progressBarListTen.visibility = View.INVISIBLE
+        binding.recViewTrxList.visibility = View.VISIBLE
         binding.swipeRefreshTrxList.isRefreshing = false
     }
 }

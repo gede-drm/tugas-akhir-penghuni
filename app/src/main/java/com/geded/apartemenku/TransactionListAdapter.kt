@@ -3,6 +3,7 @@ package com.geded.apartemenku
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -28,6 +29,12 @@ class TransactionListAdapter(val transactions:ArrayList<TransactionList>, val co
         val total_payment = Helper.formatter(transactions[position].total_payment)
         with(holder.binding) {
             txtDateTL.text = transactions[position].transaction_date
+            if(transactions[position].status == "Belum Pembayaran"){
+                txtStatusTL.setTextColor(ContextCompat.getColor(txtStatusTL.context, R.color.md_theme_dark_onError))
+            }
+            else{
+                txtStatusTL.setTextColor(ContextCompat.getColor(txtStatusTL.context, R.color.md_theme_light_secondary))
+            }
             txtStatusTL.text = transactions[position].status
             txtTenNameTL.text = transactions[position].tenant_name
             txtProNameTL.text = transactions[position].item_name

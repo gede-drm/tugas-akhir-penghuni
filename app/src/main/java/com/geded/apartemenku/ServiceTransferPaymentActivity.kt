@@ -124,7 +124,6 @@ class ServiceTransferPaymentActivity : AppCompatActivity() {
                 if (obj.getString("status") == "success") {
                     binding.cardViewTFS.isVisible = true
                     val dataObj = obj.getJSONObject("data")
-//                    val dataObj = data.getJSONObject(0)
                     val total = Helper.formatter(dataObj.getDouble("total_payment"))
                     binding.txtTenNameTFS.text = dataObj.getString("tenant_name")
                     binding.txtTrxDateTFS.text = "Tanggal Transaksi: " + dataObj.getString("transaction_date")

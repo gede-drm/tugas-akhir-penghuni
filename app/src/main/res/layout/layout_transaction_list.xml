@@ -65,6 +65,7 @@
                 android:layout_height="50dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="4dp"
+                android:scaleType="fitCenter"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtTenNameTL"
                 app:srcCompat="@drawable/baseline_broken_image_24" />
@@ -79,7 +80,7 @@
                 android:textSize="12sp"
                 app:layout_constraintBottom_toTopOf="@+id/txtTotalPriceTL"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txtRemainingQtyTL" />
+                app:layout_constraintTop_toBottomOf="@+id/imgProductTL" />
 
             <TextView
                 android:id="@+id/txtTotalPriceTL"
