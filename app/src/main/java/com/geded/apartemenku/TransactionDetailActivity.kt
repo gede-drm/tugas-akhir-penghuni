@@ -150,7 +150,23 @@ class TransactionDetailActivity : AppCompatActivity() {
 
                     if(dataObj.getString("payment") == "transfer"){
                         binding.txtPayMethodDT.text = "Transfer"
-                        if(dataObj.getString("payment_proof_url") == ""){
+                        if(dataObj.getString("status") == "notransferproof"){
+//                            if(dataObj.getString("tenant_type")=="service"){
+//                                if(dataObj.getInt("permission_need")==1) {
+//                                    binding.btnTFProofDT.isVisible =
+//                                        !(dataObj.getString("permission_status") == "notproposed" || dataObj.getString(
+//                                            "permission_status"
+//                                        ) == "reject")
+//                                }
+//                                else {
+//                                    transferNotPaid = true
+//                                    binding.btnTFProofDT.setText("Unggah Bukti Transfer")
+//                                }
+//                            }
+//                            else {
+//                                transferNotPaid = true
+//                                binding.btnTFProofDT.setText("Unggah Bukti Transfer")
+//                            }
                             transferNotPaid = true
                             binding.btnTFProofDT.setText("Unggah Bukti Transfer")
                         }

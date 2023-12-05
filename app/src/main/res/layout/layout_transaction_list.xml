@@ -57,7 +57,7 @@
                 android:background="?android:attr/listDivider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txtDateTL" />
+                app:layout_constraintTop_toBottomOf="@+id/txtStatusTL" />
 
             <ImageView
                 android:id="@+id/imgProductTL"
