@@ -29,7 +29,7 @@ class TransactionListAdapter(val transactions:ArrayList<TransactionList>, val co
         val total_payment = Helper.formatter(transactions[position].total_payment)
         with(holder.binding) {
             txtDateTL.text = transactions[position].transaction_date
-            if(transactions[position].status == "Belum Pembayaran"){
+            if(transactions[position].status == "Belum Pembayaran" || transactions[position].status == "Dibatalkan"){
                 txtStatusTL.setTextColor(ContextCompat.getColor(txtStatusTL.context, R.color.md_theme_dark_onError))
             }
             else{

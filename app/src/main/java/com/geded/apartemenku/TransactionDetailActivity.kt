@@ -44,6 +44,8 @@ class TransactionDetailActivity : AppCompatActivity() {
         token = shared.getString(LoginActivity.TOKEN, "").toString()
         transaction_id = intent.getIntExtra(TRANSACTION_ID, 0)
 
+        binding.cardViewTDDone.isVisible = false
+
         binding.btnTFProofDT.setOnClickListener {
             if(transferNotPaid == false){
                 if(paymentproofurl != ""){
@@ -98,6 +100,12 @@ class TransactionDetailActivity : AppCompatActivity() {
                 }
             }
         }
+        binding.btnFinishTrxTD.setOnClickListener {
+            val intent = Intent(this, ItemRatingActivity::class.java)
+            intent.putExtra(ItemRatingActivity.TRANSACTION_ID, transaction_id)
+            intent.putExtra(ItemRatingActivity.TENANT_TYPE, tenant_type)
+            startActivity(intent)
+        }
     }
 
     override fun onResume() {
@@ -150,23 +158,7 @@ class TransactionDetailActivity : AppCompatActivity() {
 
                     if(dataObj.getString("payment") == "transfer"){
                         binding.txtPayMethodDT.text = "Transfer"
-                        if(dataObj.getString("status") == "notransferproof"){
-//                            if(dataObj.getString("tenant_type")=="service"){
-//                                if(dataObj.getInt("permission_need")==1) {
-//                                    binding.btnTFProofDT.isVisible =
-//                                        !(dataObj.getString("permission_status") == "notproposed" || dataObj.getString(
-//                                            "permission_status"
-//                                        ) == "reject")
-//                                }
-//                                else {
-//                                    transferNotPaid = true
-//                                    binding.btnTFProofDT.setText("Unggah Bukti Transfer")
-//                                }
-//                            }
-//                            else {
-//                                transferNotPaid = true
-//                                binding.btnTFProofDT.setText("Unggah Bukti Transfer")
-//                            }
+                        if(dataObj.getString("status") == "Belum Pembayaran"){
                             transferNotPaid = true
                             binding.btnTFProofDT.setText("Unggah Bukti Transfer")
                         }
@@ -199,6 +191,26 @@ class TransactionDetailActivity : AppCompatActivity() {
 
                     tenant_type = dataObj.getString("tenant_type")
                     transaction_id = dataObj.getInt("id")
+
+                    if(tenant_type == "service"){
+                        binding.cardViewTDDone.isVisible = false
+                        if (dataObj.getString("status") == "Selesai"){
+                            if(dataObj.getInt("rating_done") == 0) {
+                                val intent = Intent(this, ItemRatingActivity::class.java)
+                                intent.putExtra(ItemRatingActivity.TRANSACTION_ID, transaction_id)
+                                intent.putExtra(ItemRatingActivity.TENANT_TYPE, tenant_type)
+                                startActivity(intent)
+                            }
+                        }
+                    }
+                    else {
+                        if (dataObj.getString("status") == "Sudah diantar" || dataObj.getString("status") == "Sudah diambil") {
+                            binding.cardViewTDDone.isVisible = true
+                        }
+                        else{
+                            binding.cardViewTDDone.isVisible = false
+                        }
+                    }
                 } else if (obj.getString("status") == "notauthenticated") {
                     Helper.logoutSystem(this)
                 } else {

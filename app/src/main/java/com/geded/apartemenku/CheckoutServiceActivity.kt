@@ -321,15 +321,7 @@ class CheckoutServiceActivity : AppCompatActivity() {
                 if (obj.getString("status") == "success") {
                     val transaction_id = obj.getInt("id")
                     Toast.makeText(this, "Transaksi Berhasil!", Toast.LENGTH_SHORT).show()
-                    if(paymethod == "transfer") {
-                        val intent = Intent(this, ServiceTransferPaymentActivity::class.java)
-                        intent.putExtra(ServiceTransferPaymentActivity.TRX_ID, transaction_id)
-                        startActivity(intent)
-                        finish()
-                    }
-                    else{
-                        finish()
-                    }
+                    finish()
                 } else if (obj.getString("status") == "failednostock") {
                     val builder = MaterialAlertDialogBuilder(this)
                     builder.setCancelable(false)
