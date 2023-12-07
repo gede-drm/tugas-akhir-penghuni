@@ -15,6 +15,8 @@ import org.json.JSONObject
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
+    var unit_idGl = 0
+    var tokenGl = ""
     companion object{
         val USERNAME = "USERNAME"
         val RESIDENTID = "RESIDENTID"
@@ -57,6 +59,7 @@ class LoginActivity : AppCompatActivity() {
                             var unit_no = array["unit_no"]
                             var holder_name = array["holder_name"]
                             var token = array["token"]
+                            var fcm_token = array["fcm_token"]
 
                             var editor: SharedPreferences.Editor = shared.edit()
                             editor.putString(USERNAME, username.toString())
@@ -66,9 +69,18 @@ class LoginActivity : AppCompatActivity() {
                             editor.putString(TOKEN, token.toString())
                             editor.apply()
 
-                            val intent = Intent(this, MainActivity::class.java)
-                            startActivity(intent)
-                            this.finish()
+                            if(fcm_token != MyFirebaseMessagingService.getToken(this)){
+                                Toast.makeText(this, "FCM TOKEN !=, " + MyFirebaseMessagingService.getToken(this), Toast.LENGTH_LONG).show()
+                                unit_idGl = resident_id.toString().toInt()
+                                tokenGl = token.toString()
+                                registerFCMDatabase()
+                            }
+                            else{
+                                Toast.makeText(this, "PASS", Toast.LENGTH_SHORT).show()
+                                val intent = Intent(this, MainActivity::class.java)
+                                startActivity(intent)
+                                this.finish()
+                            }
                         }else if (resultDb == "notactive") {
                             Toast.makeText(this, "Unit Ini Sedang Berstatus Nonaktif!", Toast.LENGTH_SHORT).show()
                         } else {
@@ -92,5 +104,38 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this, "Username atau Password Tidak Boleh Kosong!", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    fun registerFCMDatabase(){
+        var q = Volley.newRequestQueue(this)
+        val url = Global.urlWS + "registerfcm"
+
+        val stringRequest = object : StringRequest(
+            Method.POST, url,
+            Response.Listener {
+                Log.d("Success", it)
+                var obj = JSONObject(it)
+                var resultDb = obj.getString("status")
+                if (resultDb == "success") {
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
+                    this.finish()
+                } else {
+                    Toast.makeText(this, "Terdapat Kesalahan, Coba Lagi Nanti!", Toast.LENGTH_SHORT).show()
+                } },
+            Response.ErrorListener {
+                Toast.makeText(this, "Connection Error", Toast.LENGTH_SHORT).show()
+            }) {
+
+            override fun getParams(): MutableMap<String, String> {
+                val params = HashMap<String, String>()
+                params["unit_id"] = unit_idGl.toString()
+                params["token"] = tokenGl.toString()
+                params["fcm_token"] = MyFirebaseMessagingService.getToken(this@LoginActivity)
+                return params
+            }
+        }
+        stringRequest.setShouldCache(false)
+        q.add(stringRequest)
     }
 }
