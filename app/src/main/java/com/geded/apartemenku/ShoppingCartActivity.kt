@@ -28,6 +28,7 @@ class ShoppingCartActivity : AppCompatActivity() {
     private lateinit var binding: ActivityShoppingCartBinding
     var cartList:ArrayList<Cart> = arrayListOf()
     var checkoutConfigs:ArrayList<ProCheckoutConfig> = arrayListOf()
+    var transferIds:ArrayList<Int> = arrayListOf()
     var unit_id = 0
     var token = ""
     companion object{
@@ -306,19 +307,34 @@ class ShoppingCartActivity : AppCompatActivity() {
                         binding.txtEmptySC.isVisible = true
                         binding.progressBarSC.isVisible = false
 
-                        var transferPayment = false
-                        checkoutConfigs.forEach{ cc->
-                            if(cc.payment_method == "transfer"){
-                                transferPayment = true
-                            }
-                        }
-
                         checkoutConfigs.clear()
 
-                        if(transferPayment == true){
-                            val intent = Intent(this, TransferPaymentActivity::class.java)
-                            startActivity(intent)
-                            this.finish()
+                        if(obj.getString("tf") == "yes"){
+                            val tfIdArr = obj.getJSONArray("tf_ids")
+                            for (i in 0 until tfIdArr.length()) {
+                                val tfIdObj = tfIdArr.getJSONObject(i)
+                                transferIds.add(tfIdObj.getInt("id"))
+                            }
+
+                            if(transferIds.size > 0) {
+                                var transferIdsString = ""
+                                transferIds.forEachIndexed { idx, tI->
+                                    if(idx < (transferIds.size -1)) {
+                                        transferIdsString += "$tI;"
+                                    }
+                                    else{
+                                        transferIdsString += tI.toString()
+                                    }
+                                }
+
+                                val intent = Intent(this, TransferPaymentActivity::class.java)
+                                intent.putExtra(TransferPaymentActivity.TRANSACTION_IDS, transferIdsString)
+                                startActivity(intent)
+                                this.finish()
+                            }
+                            else{
+                                this.finish()
+                            }
                         }
                         else{
                             this.finish()

@@ -68,6 +68,7 @@ class TransactionDetailActivity : AppCompatActivity() {
             else{
                 if(tenant_type == "product") {
                     val intent = Intent(this, TransferPaymentActivity::class.java)
+                    intent.putExtra(TransferPaymentActivity.TRANSACTION_IDS, transaction_id.toString())
                     startActivity(intent)
                 }
                 else{

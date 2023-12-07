@@ -28,12 +28,18 @@ class TransferPaymentActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTransferPaymentBinding
     var transferTransactions:ArrayList<TransferTransaction> = arrayListOf()
     var tfTrxPosition = -1
+    var tfIdsString = ""
+    var tfIds:List<String> = listOf()
     val REQUEST_GALLERY = 2
     var unit_id = 0
     var token = ""
 
     var tempUriBase64 = ""
     var tempImageExtras:Uri ?= null
+
+    companion object{
+        val TRANSACTION_IDS = "TRANSACTION_IDS"
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTransferPaymentBinding.inflate(layoutInflater)
@@ -42,6 +48,10 @@ class TransferPaymentActivity : AppCompatActivity() {
         var shared: SharedPreferences = getSharedPreferences(Global.sharedFile, Context.MODE_PRIVATE)
         unit_id = shared.getInt(LoginActivity.RESIDENTID, 0)
         token = shared.getString(LoginActivity.TOKEN, "").toString()
+
+        tfIdsString = intent.getStringExtra(TRANSACTION_IDS).toString()
+
+        tfIds = tfIdsString.split(';')
 
         getData()
     }
@@ -150,6 +160,9 @@ class TransferPaymentActivity : AppCompatActivity() {
             override fun getParams(): MutableMap<String, String> {
                 val params = HashMap<String, String>()
                 params["unit_id"] = unit_id.toString()
+                tfIds.forEachIndexed { idx, tI ->
+                    params["transaction_ids[$idx]"] = tI
+                }
                 params["token"] = token
                 return params
             }

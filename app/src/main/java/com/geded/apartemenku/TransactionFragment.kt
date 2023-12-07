@@ -57,6 +57,12 @@ class TransactionFragment : Fragment() {
                 false
             }
         })
+
+        binding.swipeRefreshTrxList.setOnRefreshListener {
+            binding.recViewTrxList.visibility = View.INVISIBLE
+            val search = binding.txtSearchTrxTen.text.toString()
+            getData(search)
+        }
     }
 
     override fun onResume() {
