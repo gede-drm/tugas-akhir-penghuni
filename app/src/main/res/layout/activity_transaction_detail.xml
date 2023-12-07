@@ -102,7 +102,7 @@
                 android:text="Total Pembayaran"
                 android:textColor="@color/md_theme_light_secondary"
                 android:textSize="16sp"
-                app:layout_constraintBottom_toTopOf="@+id/btnTFProofDT"
+                app:layout_constraintBottom_toTopOf="@+id/btnPermDetailDT"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/recViewItemsDT" />
 
@@ -194,6 +194,20 @@
                 android:text="Lihat Bukti Pembayaran"
                 app:layout_constraintBottom_toTopOf="@+id/btnSeeStatusDT"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <Button
+                android:id="@+id/btnPermDetailDT"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="8dp"
+                android:text="Lihat Hasil Perizinan"
+                app:layout_constraintBottom_toTopOf="@+id/btnTFProofDT"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <Button

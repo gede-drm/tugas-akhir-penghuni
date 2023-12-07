@@ -1,13 +1,17 @@
 package com.geded.apartemenku
 
+import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,6 +33,9 @@ class TransactionDetailActivity : AppCompatActivity() {
     var tenant_type = ""
     var transferNotPaid = false
     var paymentproofurl = ""
+    var permission_status = ""
+    var permission_approval_date = ""
+    var permission_letter_url = ""
     var transaction_id = 0
     var token = ""
     companion object{
@@ -45,6 +52,7 @@ class TransactionDetailActivity : AppCompatActivity() {
         transaction_id = intent.getIntExtra(TRANSACTION_ID, 0)
 
         binding.cardViewTDDone.isVisible = false
+        binding.btnPermDetailDT.isVisible = false
 
         binding.btnTFProofDT.setOnClickListener {
             if(transferNotPaid == false){
@@ -106,6 +114,38 @@ class TransactionDetailActivity : AppCompatActivity() {
             intent.putExtra(ItemRatingActivity.TRANSACTION_ID, transaction_id)
             intent.putExtra(ItemRatingActivity.TENANT_TYPE, tenant_type)
             startActivity(intent)
+        }
+        binding.btnPermDetailDT.setOnClickListener {
+            if(permission_status != null && permission_approval_date != null && permission_letter_url != null){
+                val dialog = BottomSheetDialog(this)
+                val view = layoutInflater.inflate(R.layout.bottom_sheet_permsision_detail, null)
+                dialog.setCancelable(false)
+                dialog.setContentView(view)
+                dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                dialog.show()
+
+                val txtTitlePermDetail = view.findViewById<TextView>(R.id.txtTitlePermDetail)
+                if(permission_status == "accept") {
+                    txtTitlePermDetail.text = "Perizinan diterima pada $permission_approval_date"
+                }
+                if(permission_status == "reject"){
+                    txtTitlePermDetail.text = "Perizinan ditolak pada $permission_approval_date"
+                }
+
+                view.findViewById<Button>(R.id.btnDownloadPerm).setOnClickListener {
+                    val uri = Uri.parse(permission_letter_url)
+                    val request: DownloadManager.Request = DownloadManager.Request(uri)
+                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                    request.setTitle("ApartemenKu - Surat Hasil Perizinan")
+                    request.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_DOWNLOADS, "Perizinan-$transaction_id.pdf");
+                    val dm = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                    dm.enqueue(request)
+                }
+
+                view.findViewById<Button>(R.id.btnCloseDialogPerm).setOnClickListener {
+                    dialog.dismiss()
+                }
+            }
         }
     }
 
@@ -202,6 +242,15 @@ class TransactionDetailActivity : AppCompatActivity() {
                                 intent.putExtra(ItemRatingActivity.TENANT_TYPE, tenant_type)
                                 startActivity(intent)
                             }
+                        }
+                        if(dataObj.getString("permission_status") == "accept" || dataObj.getString("permission_status")  == "reject"){
+                            binding.btnPermDetailDT.isVisible = true
+                            permission_status = dataObj.getString("permission_status")
+                            permission_approval_date = dataObj.getString("permission_approval_date")
+                            permission_letter_url = dataObj.getString("permission_letter")
+                        }
+                        else{
+                            binding.btnPermDetailDT.isVisible = false
                         }
                     }
                     else {
