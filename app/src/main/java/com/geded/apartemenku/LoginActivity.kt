@@ -72,13 +72,11 @@ class LoginActivity : AppCompatActivity() {
                             editor.apply()
 
                             if(fcm_token != MyFirebaseMessagingService.getToken(this)){
-                                Toast.makeText(this, "FCM TOKEN !=, " + MyFirebaseMessagingService.getToken(this), Toast.LENGTH_LONG).show()
                                 unit_idGl = resident_id.toString().toInt()
                                 tokenGl = token.toString()
                                 registerFCMDatabase()
                             }
                             else{
-                                Toast.makeText(this, "PASS", Toast.LENGTH_SHORT).show()
                                 val intent = Intent(this, MainActivity::class.java)
                                 startActivity(intent)
                                 this.finish()
