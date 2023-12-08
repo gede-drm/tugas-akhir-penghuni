@@ -23,6 +23,7 @@ class LoginActivity : AppCompatActivity() {
         val UNITNO = "UNITNO"
         val HOLDERNAME = "HOLDERNAME"
         val TOKEN = "TOKEN"
+        val FCMTOKENSP = "FCMTOKENSP"
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +68,7 @@ class LoginActivity : AppCompatActivity() {
                             editor.putString(UNITNO, unit_no.toString())
                             editor.putString(HOLDERNAME, holder_name.toString())
                             editor.putString(TOKEN, token.toString())
+                            editor.putString(FCMTOKENSP, fcm_token.toString())
                             editor.apply()
 
                             if(fcm_token != MyFirebaseMessagingService.getToken(this)){
