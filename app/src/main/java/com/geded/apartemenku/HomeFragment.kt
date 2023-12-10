@@ -12,6 +12,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
@@ -25,11 +26,13 @@ import org.json.JSONObject
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
+    var wmalogs:ArrayList<WMALog> = arrayListOf()
     var ann_title = ""
     var ann_summary = ""
     var ann_date = ""
     var holder_name = ""
     var unit_no = ""
+    var unit_id = 0
     var token = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +40,7 @@ class HomeFragment : Fragment() {
         var shared: SharedPreferences = this.requireActivity().getSharedPreferences(Global.sharedFile, Context.MODE_PRIVATE)
         holder_name = shared.getString(LoginActivity.HOLDERNAME,"").toString()
         unit_no = shared.getString(LoginActivity.UNITNO,"").toString()
+        unit_id = shared.getInt(LoginActivity.RESIDENTID,0)
         token = shared.getString(LoginActivity.TOKEN, "").toString()
     }
 
@@ -103,7 +107,11 @@ class HomeFragment : Fragment() {
         binding.btnMoreAnnouncement.isVisible = false
         binding.txtNoAnn.isVisible = true
 
+        binding.recViewWMALogs.isVisible = false
+        binding.txtWMAEmpty.isVisible = true
+
         getAnnouncement()
+        getWMALogs()
     }
 
     fun getAnnouncement(){
@@ -145,5 +153,53 @@ class HomeFragment : Fragment() {
     }
     stringRequest.setShouldCache(false)
     q.add(stringRequest)
+    }
+
+    fun getWMALogs(){
+        wmalogs.clear()
+
+        val q = Volley.newRequestQueue(requireActivity())
+        val url = Global.urlWS + "getwmalogs"
+
+        var stringRequest = object : StringRequest(
+            Method.POST, url, Response.Listener {
+                val obj = JSONObject(it)
+                if (obj.getString("status") == "success") {
+                    val data = obj.getJSONArray("data")
+                    for (i in 0 until data.length()){
+                        val dataObj = data.getJSONObject(i)
+                        val wmaLog = WMALog(dataObj.getString("send_date"), dataObj.getString("description"))
+                        wmalogs.add(wmaLog)
+                    }
+                    updateListWMA()
+                } else if (obj.getString("status") == "empty") {
+                    binding.recViewWMALogs.isVisible = false
+                    binding.txtWMAEmpty.isVisible = true
+                } else if (obj.getString("status") == "notauthenticated") {
+                    Helper.logoutSystem(requireActivity())
+                }
+            }, Response.ErrorListener {
+
+            }) {
+            override fun getParams(): MutableMap<String, String> {
+                val params = HashMap<String, String>()
+                params["unit_id"] = unit_id.toString()
+                params["token"] = token
+                return params
+            }
+        }
+        stringRequest.setShouldCache(false)
+        q.add(stringRequest)
+    }
+
+    fun updateListWMA(){
+        val lm: LinearLayoutManager = LinearLayoutManager(requireActivity())
+        var recyclerView = binding.recViewWMALogs
+        recyclerView.layoutManager = lm
+        recyclerView.setHasFixedSize(true)
+        recyclerView.adapter = WMALogsAdapter(wmalogs, requireActivity())
+
+        binding.recViewWMALogs.isVisible = true
+        binding.txtWMAEmpty.isVisible = false
     }
 }
