@@ -66,6 +66,7 @@ class ItemRatingActivity : AppCompatActivity() {
     }
 
     fun getData(){
+        itemToRates.clear()
         val q = Volley.newRequestQueue(this)
         val url = Global.urlWS + "transaction/getitemtorate"
 
