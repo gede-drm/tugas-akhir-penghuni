@@ -312,6 +312,7 @@ class CheckoutServiceActivity : AppCompatActivity() {
         q.add(stringRequest)
     }
     fun checkout() {
+        binding.btnCheckoutCS.isEnabled = false
         val q = Volley.newRequestQueue(this)
         val url = Global.urlWS + "transaction/servicecheckout"
         var stringRequest = object : StringRequest(
@@ -322,17 +323,19 @@ class CheckoutServiceActivity : AppCompatActivity() {
                     val transaction_id = obj.getInt("id")
                     Toast.makeText(this, "Transaksi Berhasil!", Toast.LENGTH_SHORT).show()
                     finish()
-                } else if (obj.getString("status") == "failednostock") {
+                } else if (obj.getString("status") == "failednotavailable") {
+                    binding.btnCheckoutCS.isEnabled = true
                     val builder = MaterialAlertDialogBuilder(this)
                     builder.setCancelable(false)
                     builder.setTitle("Gagal Membuat Transaksi")
-                    builder.setMessage("Mohon maaf, terdapat barang yang tiba-tiba stoknya habis dan semua transaksi tidak dibuat.\nSilakan lakukan pembayaran ulang untuk barang lainnya.")
+                    builder.setMessage("Mohon maaf, terdapat jasa yang tiba-tiba tidak tersedia dan transaksi tidak dibuat.")
                     builder.setPositiveButton("OK") { dialog, which ->
                     }
                     builder.create().show()
                 } else if (obj.getString("status") == "notauthenticated") {
                     Helper.logoutSystem(this)
                 } else {
+                    binding.btnCheckoutCS.isEnabled = true
                     val builder = MaterialAlertDialogBuilder(this)
                     builder.setCancelable(false)
                     builder.setTitle("Gagal Membuat Transaksi")
@@ -343,6 +346,7 @@ class CheckoutServiceActivity : AppCompatActivity() {
                 }
             },
             Response.ErrorListener {
+                binding.btnCheckoutCS.isEnabled = true
                 val builder = MaterialAlertDialogBuilder(this)
                 builder.setCancelable(false)
                 builder.setTitle("Terjadi Masalah")

@@ -63,6 +63,7 @@ class ShoppingCartActivity : AppCompatActivity() {
         cartList.clear()
         binding.cardViewPayment.isVisible = false
         binding.recViewShoppingCart.isVisible = false
+        binding.txtCC.isVisible = false
         binding.recViewCC.isVisible = false
         binding.progressBarSC.isVisible = true
 
@@ -72,6 +73,7 @@ class ShoppingCartActivity : AppCompatActivity() {
             binding.cardViewPayment.isVisible = false
             binding.recViewShoppingCart.isVisible = false
             binding.recViewCC.isVisible = false
+            binding.txtCC.isVisible = false
             binding.txtEmptySC.isVisible = true
             binding.progressBarSC.isVisible = false
         }
@@ -161,6 +163,7 @@ class ShoppingCartActivity : AppCompatActivity() {
                         } else if(obj.getString("status") == "allempty") {
                             binding.cardViewPayment.isVisible = false
                             binding.recViewShoppingCart.isVisible = false
+                            binding.txtCC.isVisible = false
                             binding.txtEmptySC.isVisible = true
                             binding.progressBarSC.isVisible = false
 
@@ -212,6 +215,7 @@ class ShoppingCartActivity : AppCompatActivity() {
                 binding.cardViewPayment.isVisible = false
                 binding.recViewShoppingCart.isVisible = false
                 binding.txtEmptySC.isVisible = true
+                binding.txtCC.isVisible = false
                 binding.progressBarSC.isVisible = false
             }
         }
@@ -285,6 +289,7 @@ class ShoppingCartActivity : AppCompatActivity() {
             val message = "Konfigurasi Checkout untuk Tenant " + configNull.joinToString(separator = ", ") + " Belum diisi"
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
         } else {
+            binding.btnCheckoutSC.isEnabled = false
             val q = Volley.newRequestQueue(this)
             val url = Global.urlWS + "transaction/productcheckout"
 
@@ -304,6 +309,7 @@ class ShoppingCartActivity : AppCompatActivity() {
                         binding.cardViewPayment.isVisible = false
                         binding.recViewShoppingCart.isVisible = false
                         binding.recViewCC.isVisible = false
+                        binding.txtCC.isVisible = false
                         binding.txtEmptySC.isVisible = true
                         binding.progressBarSC.isVisible = false
 
@@ -340,6 +346,7 @@ class ShoppingCartActivity : AppCompatActivity() {
                             this.finish()
                         }
                     } else if(obj.getString("status") == "failednostock") {
+                        binding.btnCheckoutSC.isEnabled = true
                         val builder = MaterialAlertDialogBuilder(this)
                         builder.setCancelable(false)
                         builder.setTitle("Gagal Membuat Transaksi")
@@ -352,6 +359,7 @@ class ShoppingCartActivity : AppCompatActivity() {
                         Helper.logoutSystem(this)
                     }
                     else{
+                        binding.btnCheckoutSC.isEnabled = true
                         val builder = MaterialAlertDialogBuilder(this)
                         builder.setCancelable(false)
                         builder.setTitle("Gagal Membuat Transaksi")
@@ -362,6 +370,7 @@ class ShoppingCartActivity : AppCompatActivity() {
                     }
                 },
                 Response.ErrorListener {
+                    binding.btnCheckoutSC.isEnabled = true
                     val builder = MaterialAlertDialogBuilder(this)
                     builder.setCancelable(false)
                     builder.setTitle("Terjadi Masalah")
