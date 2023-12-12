@@ -243,6 +243,9 @@ class TransactionDetailActivity : AppCompatActivity() {
                                 startActivity(intent)
                             }
                         }
+                        if (dataObj.getString("status") == "Belum dikonfirmasi" || dataObj.getString("status") == "Dikonfirmasi"){
+                            binding.btnTFProofDT.isVisible = false
+                        }
                         if(dataObj.getString("permission_status") == "accept" || dataObj.getString("permission_status")  == "reject"){
                             binding.btnPermDetailDT.isVisible = true
                             permission_status = dataObj.getString("permission_status")
