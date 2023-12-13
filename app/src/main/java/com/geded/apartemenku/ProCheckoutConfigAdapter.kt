@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.geded.apartemenku.databinding.LayoutCheckoutConfigBinding
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.CompositeDateValidator
+import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
@@ -38,10 +39,10 @@ class ProCheckoutConfigAdapter (val checkoutConfigs:ArrayList<ProCheckoutConfig>
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun onBindViewHolder(holder: ProCheckoutConfigViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ProCheckoutConfigViewHolder, holderPosition: Int) {
         with(holder.binding) {
-            txtTenNameCC.text = checkoutConfigs[position].tenant_name
-            if(checkoutConfigs[position].cash == 0){
+            txtTenNameCC.text = checkoutConfigs[holderPosition].tenant_name
+            if(checkoutConfigs[holderPosition].cash == 0){
                 val adapter =  context?.let { ArrayAdapter(it, android.R.layout.simple_list_item_1, arrayListOf("Transfer Bank")) }
                 adapter?.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 spinnerPaymentCC.adapter = adapter
@@ -52,7 +53,7 @@ class ProCheckoutConfigAdapter (val checkoutConfigs:ArrayList<ProCheckoutConfig>
                 spinnerPaymentCC.adapter = adapter
             }
 
-            if(checkoutConfigs[position].deliveryStatus == 0){
+            if(checkoutConfigs[holderPosition].deliveryStatus == 0){
                 val adapter =  context?.let { ArrayAdapter(it, android.R.layout.simple_list_item_1, arrayListOf("Ambil")) }
                 adapter?.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 spinnerDeliveryCC.adapter = adapter
@@ -63,13 +64,13 @@ class ProCheckoutConfigAdapter (val checkoutConfigs:ArrayList<ProCheckoutConfig>
                 spinnerDeliveryCC.adapter = adapter
             }
 
-            if(checkoutConfigs[position].cash == 0 && checkoutConfigs[position].deliveryStatus == 0) {
+            if(checkoutConfigs[holderPosition].cash == 0 && checkoutConfigs[holderPosition].deliveryStatus == 0) {
                 txtWarningCC.text = "Toko ini tidak menyediakan pembayaran tunai dan layanan kirim"
             }
-            else if(checkoutConfigs[position].cash == 0){
+            else if(checkoutConfigs[holderPosition].cash == 0){
                 txtWarningCC.text = "Toko ini tidak menyediakan pembayaran tunai"
             }
-            else if(checkoutConfigs[position].deliveryStatus == 0){
+            else if(checkoutConfigs[holderPosition].deliveryStatus == 0){
                 txtWarningCC.text = "Toko ini tidak menyediakan layanan kirim"
             }
             else{
@@ -78,12 +79,13 @@ class ProCheckoutConfigAdapter (val checkoutConfigs:ArrayList<ProCheckoutConfig>
         }
         holder.binding.txtDateCC.setOnClickListener {
             val today = MaterialDatePicker.todayInUtcMilliseconds()
-            val validator = listOf(DateValidatorPointForward.from(today))
+            val oneweek = (today + 604800000L)
+            val validator = listOf(DateValidatorPointForward.from(today), DateValidatorPointBackward.before(oneweek))
             val calendarConstraintBuilder = CalendarConstraints.Builder().setValidator(CompositeDateValidator.allOf(validator))
             val datePicker = MaterialDatePicker.Builder.datePicker().setTitleText("Pilih Tanggal Kirim/Ambil").setSelection(MaterialDatePicker.todayInUtcMilliseconds()).setCalendarConstraints(calendarConstraintBuilder.build()).build()
             datePicker.addOnPositiveButtonClickListener {
                 holder.binding.txtTimeCC.setText("")
-                checkoutConfigs[position].time = null
+                checkoutConfigs[holderPosition].time = null
 
                 val txtDateFormatter = SimpleDateFormat("dd-MM-yyyy")
                 val modelDateFormatter = SimpleDateFormat("yyyy-MM-dd")
@@ -91,7 +93,7 @@ class ProCheckoutConfigAdapter (val checkoutConfigs:ArrayList<ProCheckoutConfig>
                 val modelDate = modelDateFormatter.format(Date(it))
 
                 holder.binding.txtDateCC.setText(txtDate)
-                checkoutConfigs[position].date = modelDate.toString()
+                checkoutConfigs[holderPosition].date = modelDate.toString()
             }
             context?.let { it1 -> datePicker.show(it1.supportFragmentManager, "DATE_PICKER") }
         }
@@ -107,13 +109,13 @@ class ProCheckoutConfigAdapter (val checkoutConfigs:ArrayList<ProCheckoutConfig>
                     val tf = SimpleDateFormat("HH:mm");
                     val timeSelected = LocalTime.parse(time)
                     val timeNow = LocalTime.parse(tf.format(c.getTime()))
-                    val openHour = LocalTime.parse(checkoutConfigs[position].open_hour)
-                    val closeHour = LocalTime.parse(checkoutConfigs[position].close_hour)
+                    val openHour = LocalTime.parse(checkoutConfigs[holderPosition].open_hour)
+                    val closeHour = LocalTime.parse(checkoutConfigs[holderPosition].close_hour)
                     if(df.format(c.getTime()) == holder.binding.txtDateCC.text.toString()){
                         if(timeSelected.isAfter(timeNow)){
                             if(timeSelected.isAfter(openHour) && timeSelected.isBefore(closeHour)){
                                 holder.binding.txtTimeCC.setText(time)
-                                checkoutConfigs[position].time = time
+                                checkoutConfigs[holderPosition].time = time
                             }
                             else{
                                 Toast.makeText(context, "Waktu yang anda pilih berada di luar jam operasional toko!", Toast.LENGTH_SHORT).show()
@@ -126,7 +128,7 @@ class ProCheckoutConfigAdapter (val checkoutConfigs:ArrayList<ProCheckoutConfig>
                     else {
                         if(timeSelected.isAfter(openHour) && timeSelected.isBefore(closeHour)){
                             holder.binding.txtTimeCC.setText(time)
-                            checkoutConfigs[position].time = time
+                            checkoutConfigs[holderPosition].time = time
                         }
                         else{
                             Toast.makeText(context, "Waktu yang anda pilih berada di luar jam operasional toko!", Toast.LENGTH_SHORT).show()
@@ -147,10 +149,10 @@ class ProCheckoutConfigAdapter (val checkoutConfigs:ArrayList<ProCheckoutConfig>
                 id: Long
             ) {
                 if (holder.binding.spinnerDeliveryCC.selectedItem.toString() == "Ambil"){
-                    checkoutConfigs[position].delivery_method = "pickup"
+                    checkoutConfigs[holderPosition].delivery_method = "pickup"
                 }
                 else{
-                    checkoutConfigs[position].delivery_method = "delivery"
+                    checkoutConfigs[holderPosition].delivery_method = "delivery"
                 }
             }
 
@@ -167,10 +169,10 @@ class ProCheckoutConfigAdapter (val checkoutConfigs:ArrayList<ProCheckoutConfig>
                 id: Long
             ) {
                 if (holder.binding.spinnerPaymentCC.selectedItem.toString() == "Tunai"){
-                    checkoutConfigs[position].payment_method = "cash"
+                    checkoutConfigs[holderPosition].payment_method = "cash"
                 }
                 else{
-                    checkoutConfigs[position].payment_method = "transfer"
+                    checkoutConfigs[holderPosition].payment_method = "transfer"
                 }
             }
 

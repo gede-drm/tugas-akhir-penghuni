@@ -21,6 +21,7 @@ import com.android.volley.toolbox.Volley
 import com.geded.apartemenku.databinding.ActivityCheckoutServiceBinding
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.CompositeDateValidator
+import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -70,7 +71,8 @@ class CheckoutServiceActivity : AppCompatActivity() {
 
         binding.txtDateCS.setOnClickListener {
             val today = MaterialDatePicker.todayInUtcMilliseconds()
-            val validator = listOf(DateValidatorPointForward.from(today))
+            val oneweek = (today + 604800000L)
+            val validator = listOf(DateValidatorPointForward.from(today), DateValidatorPointBackward.before(oneweek))
             val calendarConstraintBuilder = CalendarConstraints.Builder().setValidator(
                 CompositeDateValidator.allOf(validator))
             val datePicker = MaterialDatePicker.Builder.datePicker().setTitleText("Pilih Tanggal Pengerjaan").setSelection(
