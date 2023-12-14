@@ -13,6 +13,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
@@ -27,6 +28,7 @@ import org.json.JSONObject
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     var wmalogs:ArrayList<WMALog> = arrayListOf()
+    var announcements: ArrayList<Announcement> = arrayListOf()
     var ann_title = ""
     var ann_summary = ""
     var ann_date = ""
@@ -85,13 +87,12 @@ class HomeFragment : Fragment() {
                 dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
                 dialog.show()
 
-                val txtTitleABS = view.findViewById<TextView>(R.id.txtAnnTitleBS)
-                val txtDateABS = view.findViewById<TextView>(R.id.txtAnnDateBS)
-                val txtDescABS = view.findViewById<TextView>(R.id.txtAnnDescBS)
-
-                txtTitleABS.text = ann_title
-                txtDateABS.text = "Dibuat: $ann_date"
-                txtDescABS.text = ann_summary
+                val lm: LinearLayoutManager = LinearLayoutManager(requireActivity())
+                var recyclerView = view.findViewById<RecyclerView>(R.id.recViewAnnouncement)
+                recyclerView.layoutManager = lm
+                recyclerView.setHasFixedSize(true)
+                recyclerView.adapter = AnnouncementsAdapter(announcements, requireActivity())
+                recyclerView.isVisible = true
 
                 view.findViewById<Button>(R.id.btnCloseDialogAnn).setOnClickListener {
                     dialog.dismiss()
@@ -111,6 +112,7 @@ class HomeFragment : Fragment() {
         binding.txtWMAEmpty.isVisible = true
 
         getAnnouncement()
+        getOneWeekAnnouncements()
         getWMALogs()
     }
 
@@ -153,6 +155,43 @@ class HomeFragment : Fragment() {
     }
     stringRequest.setShouldCache(false)
     q.add(stringRequest)
+    }
+
+    fun getOneWeekAnnouncements(){
+        val q = Volley.newRequestQueue(requireActivity())
+        val url = Global.urlWS + "announcement/getoneweek"
+
+        var stringRequest = object : StringRequest(
+            Method.POST, url, Response.Listener {
+                val obj = JSONObject(it)
+                if (obj.getString("status") == "success") {
+                    val dataArr = obj.getJSONArray("data")
+                    for (i in 0 until dataArr.length()) {
+                        var dataObj = dataArr.getJSONObject(i)
+
+                        val announcement = Announcement(dataObj.getString("title"), dataObj.getString("date"), dataObj.getString("description"))
+                        announcements.add(announcement)
+                    }
+
+                } else if (obj.getString("status") == "empty") {
+                    binding.txtAnnTitle.isVisible = false
+                    binding.txtAnnSummary.isVisible = false
+                    binding.btnMoreAnnouncement.isVisible = false
+                    binding.txtNoAnn.isVisible = true
+                } else if (obj.getString("status") == "notauthenticated") {
+                    Helper.logoutSystem(requireActivity())
+                }
+            }, Response.ErrorListener {
+
+            }) {
+            override fun getParams(): MutableMap<String, String> {
+                val params = HashMap<String, String>()
+                params["token"] = token
+                return params
+            }
+        }
+        stringRequest.setShouldCache(false)
+        q.add(stringRequest)
     }
 
     fun getWMALogs(){
