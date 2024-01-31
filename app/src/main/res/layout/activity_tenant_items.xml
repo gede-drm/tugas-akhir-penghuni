@@ -28,7 +28,7 @@
                 android:text="Keranjang"
                 app:icon="@drawable/baseline_shopping_basket_24"
                 app:iconGravity="start"
-                app:layout_constraintBottom_toTopOf="@+id/txtILSearchTenItem"
+                app:layout_constraintBottom_toTopOf="@+id/btnTenReview"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -96,7 +96,7 @@
                 app:hintEnabled="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txtTenAddressTItems"
+                app:layout_constraintTop_toBottomOf="@+id/btnTenReview"
                 app:startIconDrawable="@drawable/baseline_search_24">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -120,6 +120,20 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtILSearchTenItem"
                 tools:listitem="@layout/layout_item_tenant" />
+
+            <Button
+                android:id="@+id/btnTenReview"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="24dp"
+                android:text="Lihat Review Toko (0)"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtTenAddressTItems" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
