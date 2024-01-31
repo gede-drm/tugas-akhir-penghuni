@@ -18,6 +18,8 @@ import org.json.JSONObject
 class ItemRatingActivity : AppCompatActivity() {
     private lateinit var binding:ActivityItemRatingBinding
     var itemToRates:ArrayList<ItemToRate> = arrayListOf()
+    var serviceRate = 0
+    var serviceReview = ""
     var tenant_type = ""
     var transaction_id = 0
     var token = ""
@@ -44,6 +46,47 @@ class ItemRatingActivity : AppCompatActivity() {
             binding.btnRate.text = "Kirimkan Rating"
         }
 
+        binding.btnSvcStarOne.setOnClickListener{
+            serviceRate = 1
+            binding.btnSvcStarOne.setImageResource(R.drawable.baseline_star_rate_24)
+            binding.btnSvcStarTwo.setImageResource(R.drawable.baseline_star_rate_grey_24)
+            binding.btnSvcStarThree.setImageResource(R.drawable.baseline_star_rate_grey_24)
+            binding.btnSvcStarFour.setImageResource(R.drawable.baseline_star_rate_grey_24)
+            binding.btnSvcStarFive.setImageResource(R.drawable.baseline_star_rate_grey_24)
+        }
+        binding.btnSvcStarTwo.setOnClickListener{
+            serviceRate = 2
+            binding.btnSvcStarOne.setImageResource(R.drawable.baseline_star_rate_24)
+            binding.btnSvcStarTwo.setImageResource(R.drawable.baseline_star_rate_24)
+            binding.btnSvcStarThree.setImageResource(R.drawable.baseline_star_rate_grey_24)
+            binding.btnSvcStarFour.setImageResource(R.drawable.baseline_star_rate_grey_24)
+            binding.btnSvcStarFive.setImageResource(R.drawable.baseline_star_rate_grey_24)
+        }
+        binding.btnSvcStarThree.setOnClickListener{
+            serviceRate = 3
+            binding.btnSvcStarOne.setImageResource(R.drawable.baseline_star_rate_24)
+            binding.btnSvcStarTwo.setImageResource(R.drawable.baseline_star_rate_24)
+            binding.btnSvcStarThree.setImageResource(R.drawable.baseline_star_rate_24)
+            binding.btnSvcStarFour.setImageResource(R.drawable.baseline_star_rate_grey_24)
+            binding.btnSvcStarFive.setImageResource(R.drawable.baseline_star_rate_grey_24)
+        }
+        binding.btnSvcStarFour.setOnClickListener{
+            serviceRate = 4
+            binding.btnSvcStarOne.setImageResource(R.drawable.baseline_star_rate_24)
+            binding.btnSvcStarTwo.setImageResource(R.drawable.baseline_star_rate_24)
+            binding.btnSvcStarThree.setImageResource(R.drawable.baseline_star_rate_24)
+            binding.btnSvcStarFour.setImageResource(R.drawable.baseline_star_rate_24)
+            binding.btnSvcStarFive.setImageResource(R.drawable.baseline_star_rate_grey_24)
+        }
+        binding.btnSvcStarFive.setOnClickListener{
+            serviceRate = 5
+            binding.btnSvcStarOne.setImageResource(R.drawable.baseline_star_rate_24)
+            binding.btnSvcStarTwo.setImageResource(R.drawable.baseline_star_rate_24)
+            binding.btnSvcStarThree.setImageResource(R.drawable.baseline_star_rate_24)
+            binding.btnSvcStarFour.setImageResource(R.drawable.baseline_star_rate_24)
+            binding.btnSvcStarFive.setImageResource(R.drawable.baseline_star_rate_24)
+        }
+
         binding.btnRate.setOnClickListener {
             var nullItemRates:ArrayList<Int> = arrayListOf()
             itemToRates.forEach {itr ->
@@ -51,7 +94,8 @@ class ItemRatingActivity : AppCompatActivity() {
                     nullItemRates.add(itr.item_id)
                 }
             }
-            if(nullItemRates.size == 0){
+            serviceReview = binding.txtSvcReviewRate.text.toString()
+            if(nullItemRates.size == 0 && serviceRate > 0 && serviceReview != ""){
                 finishTransaction()
             }
             else{
@@ -161,6 +205,8 @@ class ItemRatingActivity : AppCompatActivity() {
                     params["items_rating[$idx]"] = it.rating.toString()
                     params["items_review[$idx]"] = it.review.toString()
                 }
+                params["service_rating"] = serviceRate.toString()
+                params["service_review"] = serviceReview
                 params["token"] = token
                 return params
             }

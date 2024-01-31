@@ -6,6 +6,114 @@
     android:layout_height="match_parent"
     tools:context=".ItemRatingActivity">
 
+    <androidx.cardview.widget.CardView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recViewItemToRate">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/txtILSvcReviewRate"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="12dp"
+                android:hint="Review"
+                app:boxBackgroundColor="#FFFFFF"
+                app:layout_constraintBottom_toTopOf="@+id/btnSvcStarOne"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtSvcItemNameRate">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txtSvcReviewRate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="text|textNoSuggestions"
+                    android:maxLength="256" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ImageView
+                android:id="@+id/btnSvcStarOne"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="64dp"
+                android:layout_marginBottom="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:srcCompat="@drawable/baseline_star_rate_grey_24" />
+
+            <ImageView
+                android:id="@+id/btnSvcStarTwo"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btnSvcStarThree"
+                app:layout_constraintStart_toEndOf="@+id/btnSvcStarOne"
+                app:srcCompat="@drawable/baseline_star_rate_grey_24" />
+
+            <ImageView
+                android:id="@+id/btnSvcStarThree"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:srcCompat="@drawable/baseline_star_rate_grey_24" />
+
+            <ImageView
+                android:id="@+id/btnSvcStarFour"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btnSvcStarFive"
+                app:layout_constraintStart_toEndOf="@+id/btnSvcStarThree"
+                app:srcCompat="@drawable/baseline_star_rate_grey_24" />
+
+            <ImageView
+                android:id="@+id/btnSvcStarFive"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="64dp"
+                android:layout_marginBottom="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:srcCompat="@drawable/baseline_star_rate_grey_24" />
+
+            <TextView
+                android:id="@+id/txtSvcItemNameRate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="Pelayanan Tenant"
+                android:textColor="@color/md_theme_light_secondary"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
     <TextView
         android:id="@+id/txtItemRateTitle"
         android:layout_width="0dp"
@@ -63,10 +171,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recViewItemToRate"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:overScrollMode="ifContentScrolls"
-        app:layout_constraintBottom_toTopOf="@+id/cardView4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView35" />
